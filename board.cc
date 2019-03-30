@@ -20,13 +20,18 @@
 
 using namespace std;
 
-Board::Board(int WIDTH, int HEIGHT) : WIDTH{8}, HEIGHT{8}
+Board::Board(int WIDTH, int HEIGHT) : WIDTH{8}, HEIGHT{8},
+hasSetup{false}, hasPlay{false}, whiteScore{0}, blackScore{0}, textOrGraphic{true},
 {
 	for(int i = 0; i < 8; i++){
 		for(int j = 0; j < 8; j++){
 			pieces[i][j] = nullptr;
 		}
 	}
+}
+
+Piece* Board::atLocation(Position pos){
+	return pieces[pos.getX][pos.getY];
 }
 
 void Board::addPiece(string pieceType, Position pos){
@@ -39,7 +44,7 @@ void Board::addPiece(string pieceType, Position pos){
 	}
 
     // if there is already a piece at pos, throw an error
-	if(pieces[pos.getX][pos.getY]){
+	if(atLocation(pos)){
 		throw("There is already a piece at this position!");
 	}
 
@@ -49,30 +54,41 @@ void Board::addPiece(string pieceType, Position pos){
 	// contruct a new piece pointer to the position on board
 	if (pieceType == "K" || pieceType == "k"){
 		// need to wait Eric for the constructor of King/Queen/...
-		pieces[pos.getX][pos.getY] = new King(isWhite, pos);
+		atLocation(pos) = new King(isWhite, pos);
 	} else if (pieceType == "Q" || pieceType == "q"){
-		pieces[pos.getX][pos.getY] = new Queen(isWhite, pos);
+		atLocation(pos) = new Queen(isWhite, pos);
 	} else if (pieceType == "R" || pieceType == "r"){
-		pieces[pos.getX][pos.getY] = new Rook(isWhite, pos);
+		atLocation(pos) = new Rook(isWhite, pos);
 	} else if (pieceType == "H" || pieceType == "h"){
-		pieces[pos.getX][pos.getY] = new Knight(isWhite, pos);
+		atLocation(pos) = new Knight(isWhite, pos);
 	} else if (pieceType == "B" || pieceType == "b"){
-		pieces[pos.getX][pos.getY] = new Bishop(isWhite, pos);
+		atLocation(pos) = new Bishop(isWhite, pos);
 	} else if (pieceType == "P" || pieceType == "p"){
-		pieces[pos.getX][pos.getY] = new Pawn(isWhite, pos);
+		atLocation(pos) = new Pawn(isWhite, pos);
 	}
 }
 
-Piece* Board::atLocation(Position pos){
-	return pieces[pos.getX][pos.getY];
-}
 
+// makeMove method needs to consider other cases
 void Board::makeMove(Position start, Position end, string pieceType){
 	// if there is already a piece at Position end, throw an error
-	if(pieces[end.getX][end.getY]){
+	if(atLocation(end)){
 		throw("There is already a piece at Position end!");
 	}
-	
+
+	// move the piece pointer at Position start to Position end
+	pieces[end.getX][end.getY] = move(pieces[start.getX][start.getY];)
+
+	// free the owner piece at Position start
+	delete pieces[start.getX][start.getY];
+
+    bool isWhite;
+	// check if the piece is white or blackß
+	if (pieceType[0] <= 'Z'){
+		isWhite = true;
+	} else {
+		isWhite = false;
+	}
+
+	// When the piece is a pawn, upgrade the pawn to another piece except King
 }
-
-
