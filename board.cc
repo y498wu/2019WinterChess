@@ -20,6 +20,15 @@
 
 using namespace std;
 
+Board::Board(int WIDTH, int HEIGHT) : WIDTH{8}, HEIGHT{8}
+{
+	for(int i = 0; i < 8; i++){
+		for(int j = 0; j < 8; j++){
+			pieces[i][j] = nullptr;
+		}
+	}
+}
+
 void Board::addPiece(string pieceType, Position pos){
 	bool isWhite;
 	// check if the piece is white or blackß
@@ -27,6 +36,11 @@ void Board::addPiece(string pieceType, Position pos){
 		isWhite = true;
 	} else {
 		isWhite = false;
+	}
+
+    // if there is already a piece at pos, throw an error
+	if(pieces[pos.getX][pos.getY]){
+		throw("There is already a piece at this position!");
 	}
 
 	// free the owner piece at pos
@@ -47,6 +61,18 @@ void Board::addPiece(string pieceType, Position pos){
 	} else if (pieceType == "P" || pieceType == "p"){
 		pieces[pos.getX][pos.getY] = new Pawn(isWhite, pos);
 	}
+}
+
+Piece* Board::atLocation(Position pos){
+	return pieces[pos.getX][pos.getY];
+}
+
+void Board::makeMove(Position start, Position end, string pieceType){
+	// if there is already a piece at Position end, throw an error
+	if(pieces[end.getX][end.getY]){
+		throw("There is already a piece at Position end!");
+	}
+	
 }
 
 
