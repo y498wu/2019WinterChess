@@ -19,7 +19,7 @@ void Position::getX(int val){
 }
 
 bool Position::equals(Position pos) const{
-	if(this->x == pos.x && this->y == pos.y){ return true;}	
+	if(this->x == pos.getX() && this->y == pos.getY()){ return true;}	
 		
 	return false;	
 }

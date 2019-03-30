@@ -20,3 +20,7 @@ Position Pieces::getPos() const{
 void Pieces::setPos(Position newPos){
 	this->Location = newPos;
 }
+
+bool Pieces::isWhite() const{
+	return this->White;
+}
