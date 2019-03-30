@@ -27,26 +27,33 @@ class Board {
   int whiteScore = 0;
   int blackScore = 0;
 
-  public:
-  void makeMove(Position start, Position end, bool isWhite);
-  void setLevel(int level);
-  void endGame(Player *player);
-  Piece* atLocation(Position pos);
-  void updateBoard();
-  bool isCheck();
-  bool checkMate();
-  bool staleMate();
-  bool textOrGraphic();
-  bool printTextBoard();
-  void printGraphicBoard();
-  void printScores();
-  void placePieces(string piece, Position pos, bool isWhite);
+  bool textOrGraphic = true;
 
+  public:
   ~Board();
-   Board();
+  Board();
+
+  // setup stage: add/remove a piece to the pos at the board
+  void addPiece(std::string pieceType, Position pos);
+  void removePiece(Position pos);
+
+  // makeMove method
+  void makeMove(Position start, Position end, Position pos);
+  // Not sure I understand what atLocation is doing
+  Piece* atLocation(Position pos);
+  // When a colour resigns
+  void resign(bool isWhite);
+  // set the level
+  void setLevel(int level);
+  // if a colour is undercheck
+  bool isCheck(bool isWhite);
+  // print TextBoard when textOrGarphic is true by default
+  void printTextBoard(bool textOrGraphic);
+  // void printGraphicBoard();
+  void printScores();
    
 };
 
-	std::ostream &operator<<(std::ostream &out, const Board &brd);
+std::ostream &operator<<(std::ostream &out, const Board &brd);
 
 #endif
