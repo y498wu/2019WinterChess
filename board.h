@@ -33,9 +33,9 @@ class Board {
   ~Board();
   Board();
 
-  // setup stage: add/remove a piece to the pos at the board
+  // setup stage: add a piece to the pos at the board
+  // The board will automatically remove the piece on pos when it's adding a new piece there
   void addPiece(std::string pieceType, Position pos);
-  void removePiece(Position pos);
 
   // makeMove method
   void makeMove(Position start, Position end, Position pos);
@@ -55,5 +55,6 @@ class Board {
 };
 
 std::ostream &operator<<(std::ostream &out, const Board &brd);
+
 
 #endif
