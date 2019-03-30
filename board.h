@@ -11,9 +11,6 @@
 #include "DisplaySuper.h"
 #include "Player.h"
 
-const int WIDTH = 8;
-const int HEIGHT = 8;
-
 class Board {
   vector<vector<Piece*>> pieces;
   //so the reason we need triple pointers is because Piece is an abstract class so we can't make any 
@@ -25,6 +22,9 @@ class Board {
   ~Board();
   Board();
 
+  int WIDTH = 8;
+  int HEIGHT = 8;
+
   bool hasSetup = false;
   bool hasPlay = false;
 
@@ -32,6 +32,8 @@ class Board {
   int blackScore = 0;
 
   bool textOrGraphic = true;
+
+  Board(int WIDTH = 8, int HEIGHT = 8);
 
   // setup stage: add a piece to the pos at the board
   // The board will automatically remove the piece on pos when it's adding a new piece there
