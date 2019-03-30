@@ -1,24 +1,23 @@
-#ifndef KING_H
-#define KING_H
+#ifndef ROOK_H
+#define ROOK_H
 
-#include "king.cc"
+#include "rook.cc"
 #include "pieces.h"
 #include "position.h"
 #include <vector>
 #include <string>
 
-class King: public Pieces{
+class Rook: public Pieces{
 		
 	bool hasMoved;
-	bool inCheck;
 
 public: 
 	
 	void updateMoves() override;
 	std::string checkType() const override;
 	
-	King(Board *theBoard, bool White, Position Location);
-	~King();
+	Rook(Board *theBoard, bool White, Position Location);
+	~Rook();
  
 };
 

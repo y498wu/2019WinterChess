@@ -2,8 +2,16 @@
 
 King::~King(){LegalMoves.clear();}
 
-std::string checkType() const{
-	return "k";	
+King::King(Board *theBoard, bool White, Position Location): theBoard{theBoard},
+															White{White},
+															Location{Location},
+															Protected{false},
+															Pinned{nullptr},
+															hasMoved{false},
+															inCheck{false}{}
+
+std::string King::checkType() const{
+	return this->White ? "K" : "k";
 }
 
 void King::updateMoves(){

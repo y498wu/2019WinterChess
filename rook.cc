@@ -2,8 +2,16 @@
 
 Rook::~Rook(){LegalMoves.clear();}
 
-std::string checkType() const{
-	return "r";	
+
+Rook::Rook(Board *theBoard, bool White, Position Location): theBoard{theBoard},
+															White{White},
+															Location{Location},
+															Protected{false},
+															Pinned{nullptr},
+															hasMoved{false}{}
+
+std::string Rook::checkType() const{
+	return this->White ? "R" : "r";
 }
 
 void Rook::updateMoves(){
