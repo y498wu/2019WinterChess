@@ -21,6 +21,10 @@ class Board {
   //and these piece pointers can point to any of the possible pieces, which is why the board dosen't need to
   //know what types of pieces they are, that is all handeled by the piece class and its virtual methods
 
+  public:
+  ~Board();
+  Board();
+
   bool hasSetup = false;
   bool hasPlay = false;
 
@@ -29,18 +33,16 @@ class Board {
 
   bool textOrGraphic = true;
 
-  public:
-  ~Board();
-  Board();
-
   // setup stage: add a piece to the pos at the board
   // The board will automatically remove the piece on pos when it's adding a new piece there
   void addPiece(std::string pieceType, Position pos);
 
-  // makeMove method
-  void makeMove(Position start, Position end, Position pos);
-  // Not sure I understand what atLocation is doing
+  // Get the piece pointer at pos
   Piece* atLocation(Position pos);
+
+  // makeMove method
+  void makeMove(Position start, Position end, std::string pieceType);
+  
   // When a colour resigns
   void resign(bool isWhite);
   // set the level
