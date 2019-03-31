@@ -31,7 +31,7 @@ hasSetup{false}, hasPlay{false}, whiteScore{0}, blackScore{0}, textOrGraphic{tru
 }
 
 Piece* Board::atLocation(Position pos){
-	return pieces[pos.getX][pos.getY];
+	return pieces[pos.getY][pos.getX];
 }
 
 void Board::addPiece(string pieceType, Position pos){
@@ -49,7 +49,7 @@ void Board::addPiece(string pieceType, Position pos){
 	}
 
 	// free the owner piece at pos
-	delete pieces[pos.getX][pos.getY];
+	delete pieces[pos.getY][pos.getX];
 
 	// contruct a new piece pointer to the position on board
 	if (pieceType == "K" || pieceType == "k"){
@@ -77,10 +77,10 @@ void Board::makeMove(Position start, Position end, string pieceType){
 	}
 
 	// move the piece pointer at Position start to Position end
-	pieces[end.getX][end.getY] = move(pieces[start.getX][start.getY];)
+	pieces[end.getY][end.getX] = move(pieces[start.getY][start.getX];)
 
 	// free the owner piece at Position start
-	delete pieces[start.getX][start.getY];
+	delete pieces[start.getY][start.getX];
 
     bool isWhite;
 	// check if the piece is white or blackß
