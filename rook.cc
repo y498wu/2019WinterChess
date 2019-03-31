@@ -53,8 +53,22 @@ void Rook::updateMoves(){
 				leftMoves.erase(leftMoves.begin() + i, leftMoves.end());
 				
 			}
-			else{ //this means that it is an enemy piece, can move to its position
-				leftMoves.erase(leftMoves.begin() + i + 1, leftMoves.end());
+			else{ //this means that it is an enemy piece, can move to its position, check for pinning
+				for(int j = i+1; j < size; j++){//check if the king is the next piece behind temp
+					Pieces* isKing = this->theBoard.atLocation(leftMoves.at(j));
+					
+					//if the first piece behind temp is the enemy king
+					if(isKing != nullptr ){
+						if((isKing->checkType() == "k" && this->White) || isKing->checkType() == "K" && this->White == false){
+							temp->setPinned(this);
+							temp->updateMoves();
+						}
+						
+						break;
+					}
+				}
+				
+				leftMoves.erase(leftMoves.begin() + i + 1, leftMoves.end());	
 			}
 
 			break;		
@@ -69,12 +83,26 @@ void Rook::updateMoves(){
 		
 		if(temp != nullptr){//if there is a piece at the possible location
 			if((this->White && temp->isWhite()) || (this->White == false && temp->isWhite() == false)){
-				temp->setProtected(true);				
+				temp->setProtected(true);			
 				rightMoves.erase(rightMoves.begin() + i, rightMoves.end());
 				
 			}
-			else{ //this means that it is an enemy piece, can move to its position
-				rightMoves.erase(rightMoves.begin() + i + 1, rightMoves.end());
+			else{ //this means that it is an enemy piece, can move to its position, check for pinning
+				for(int j = i+1; j < size; j++){//check if the king is the next piece behind temp
+					Pieces* isKing = this->theBoard.atLocation(rightMoves.at(j));
+					
+					//if the first piece behind temp is the enemy king
+					if(isKing != nullptr ){
+						if((isKing->checkType() == "k" && this->White) || isKing->checkType() == "K" && this->White == false){
+							temp->setPinned(this);
+							temp->updateMoves();
+						}
+						
+						break;
+					}
+				}
+				
+				rightMoves.erase(rightMoves.begin() + i + 1, rightMoves.end());	
 			}
 
 			break;		
@@ -93,8 +121,22 @@ void Rook::updateMoves(){
 				upMoves.erase(upMoves.begin() + i, upMoves.end());
 				
 			}
-			else{ //this means that it is an enemy piece, can move to its position
-				upMoves.erase(upMoves.begin() + i + 1, upMoves.end());
+			else{ //this means that it is an enemy piece, can move to its position, check for pinning
+				for(int j = i+1; j < size; j++){//check if the king is the next piece behind temp
+					Pieces* isKing = this->theBoard.atLocation(upMoves.at(j));
+					
+					//if the first piece behind temp is the enemy king
+					if(isKing != nullptr ){
+						if((isKing->checkType() == "k" && this->White) || isKing->checkType() == "K" && this->White == false){
+							temp->setPinned(this);
+							temp->updateMoves();
+						}
+						
+						break;
+					}
+				}
+				
+				upMoves.erase(upMoves.begin() + i + 1, upMoves.end());	
 			}
 
 			break;		
@@ -109,19 +151,52 @@ void Rook::updateMoves(){
 		
 		if(temp != nullptr){//if there is a piece at the possible location
 			if((this->White && temp->isWhite()) || (this->White == false && temp->isWhite() == false)){
-				temp->setProtected(true); 				
+				temp->setProtected(true);			
 				downMoves.erase(downMoves.begin() + i, downMoves.end());
 				
 			}
-			else{ //this means that it is an enemy piece, can move to its position
-				downMoves.erase(downMoves.begin() + i + 1, downMoves.end());
+			else{ //this means that it is an enemy piece, can move to its position, check for pinning
+				for(int j = i+1; j < size; j++){//check if the king is the next piece behind temp
+					Pieces* isKing = this->theBoard.atLocation(downMoves.at(j));
+					
+					//if the first piece behind temp is the enemy king
+					if(isKing != nullptr ){
+						if((isKing->checkType() == "k" && this->White) || isKing->checkType() == "K" && this->White == false){
+							temp->setPinned(this);
+							temp->updateMoves();
+						}
+						
+						break;
+					}
+				}
+				
+				downMoves.erase(downMoves.begin() + i + 1, downMoves.end());	
 			}
 
 			break;		
 		}		
 	}
 	
-	// step 3: update LegalMoves
+	// step 3: check for pinning
+	
+	if(this->Pinned != nullptr){
+		if(this->Pinned->getPos().getX() == this->Location.getX()){
+			leftMoves.clear();
+			rightMoves.clear();
+		}
+		else if(this->Pinned->getPos().getY() == this->Location.getY()){
+			upMoves.clear();
+			downMoves.clear();
+		}
+		else{
+			leftMoves.clear();
+			rightMoves.clear();
+			upMoves.clear();
+			downMoves.clear();
+		}
+	}
+	
+	// step 4: update LegalMoves
 	
 	this->LegalMoves.clear();
 	
