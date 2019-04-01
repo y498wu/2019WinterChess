@@ -22,25 +22,38 @@ class Board {
   ~Board();
   Board();
 
-  int WIDTH = 8;
-  int HEIGHT = 8;
+  int WIDTH;
+  int HEIGHT;
 
-  bool hasSetup = false;
-  bool hasPlay = false;
+  bool hasSetup;
+  bool hasPlay;
 
-  int whiteScore = 0;
-  int blackScore = 0;
+  int whiteScore;
+  int blackScore;
 
-  bool textOrGraphic = true;
+  bool textOrGraphic;
+  bool isWhiteTurn;
 
   Board(int WIDTH = 8, int HEIGHT = 8);
 
-  // setup stage: add a piece to the pos at the board
-  // The board will automatically remove the piece on pos when it's adding a new piece there
-  void addPiece(std::string pieceType, Position pos);
-
   // Get the piece pointer at pos
   Piece* atLocation(Position pos);
+
+  // start setup mode
+  void startSetup();
+
+  // setup stage: add a piece at pos 
+  // The board will automatically remove the piece on pos when it's adding a new piece there
+  void addPieceSetup(std::string pieceType, Position pos);
+
+  // setup stage: remove a piece at pos
+  void removePieceSetup(Position pos);
+
+  // setup stage: which colour's turn to go next
+  void colourSetup(bool isWhite);
+
+  // setup stage: user can choose the original setup
+  void originalSetup();
 
   // makeMove method
   void makeMove(Position start, Position end, std::string pieceType);
