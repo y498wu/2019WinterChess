@@ -16,6 +16,8 @@ std::string Rook::checkType() const{
 
 void Rook::updateMoves(){
 	
+	Pieces* isPin = nullptr;
+	
 	vector<Position> leftMoves;
 	vector<Position> rightMoves;
 	vector<Position> upMoves;
@@ -54,20 +56,26 @@ void Rook::updateMoves(){
 				
 			}
 			else{ //this means that it is an enemy piece, can move to its position, check for pinning
+				if(temp->checkType() = "K" || temp->checkType() = "k"){
+					King* tempKing = temp;
+					tempKing->putInCheck(true);
+				}else{
 				for(int j = i+1; j < size; j++){//check if the king is the next piece behind temp
 					Pieces* isKing = this->theBoard.atLocation(leftMoves.at(j));
 					
 					//if the first piece behind temp is the enemy king
 					if(isKing != nullptr ){
 						if((isKing->checkType() == "k" && this->White) || isKing->checkType() == "K" && this->White == false){
-							temp->setPinned(this);
-							temp->updateMoves();
+							if(temp->isPinned() == nullptr){
+								temp->setPinned(this);
+								isPin = temp;
+							}
 						}
 						
 						break;
 					}
 				}
-				
+				}
 				leftMoves.erase(leftMoves.begin() + i + 1, leftMoves.end());	
 			}
 
@@ -88,20 +96,26 @@ void Rook::updateMoves(){
 				
 			}
 			else{ //this means that it is an enemy piece, can move to its position, check for pinning
+				if(temp->checkType() = "K" || temp->checkType() = "k"){
+					King* tempKing = temp;
+					tempKing->putInCheck(true);
+				}else{
 				for(int j = i+1; j < size; j++){//check if the king is the next piece behind temp
 					Pieces* isKing = this->theBoard.atLocation(rightMoves.at(j));
 					
 					//if the first piece behind temp is the enemy king
 					if(isKing != nullptr ){
 						if((isKing->checkType() == "k" && this->White) || isKing->checkType() == "K" && this->White == false){
-							temp->setPinned(this);
-							temp->updateMoves();
+							if(temp->isPinned() == nullptr){
+								temp->setPinned(this);
+								isPin = temp;
+							}
 						}
 						
 						break;
 					}
 				}
-				
+				}
 				rightMoves.erase(rightMoves.begin() + i + 1, rightMoves.end());	
 			}
 
@@ -122,20 +136,27 @@ void Rook::updateMoves(){
 				
 			}
 			else{ //this means that it is an enemy piece, can move to its position, check for pinning
+				
+				if(temp->checkType() = "K" || temp->checkType() = "k"){
+					King* tempKing = temp;
+					tempKing->putInCheck(true);
+				}else{
 				for(int j = i+1; j < size; j++){//check if the king is the next piece behind temp
 					Pieces* isKing = this->theBoard.atLocation(upMoves.at(j));
 					
 					//if the first piece behind temp is the enemy king
 					if(isKing != nullptr ){
 						if((isKing->checkType() == "k" && this->White) || isKing->checkType() == "K" && this->White == false){
-							temp->setPinned(this);
-							temp->updateMoves();
+							if(temp->isPinned() == nullptr){
+								temp->setPinned(this);
+								isPin = temp;
+							}
 						}
 						
 						break;
 					}
 				}
-				
+				}
 				upMoves.erase(upMoves.begin() + i + 1, upMoves.end());	
 			}
 
@@ -156,20 +177,27 @@ void Rook::updateMoves(){
 				
 			}
 			else{ //this means that it is an enemy piece, can move to its position, check for pinning
+			
+				if(temp->checkType() = "K" || temp->checkType() = "k"){
+					King* tempKing = temp;
+					tempKing->putInCheck(true);
+				}else{
 				for(int j = i+1; j < size; j++){//check if the king is the next piece behind temp
 					Pieces* isKing = this->theBoard.atLocation(downMoves.at(j));
 					
 					//if the first piece behind temp is the enemy king
 					if(isKing != nullptr ){
 						if((isKing->checkType() == "k" && this->White) || isKing->checkType() == "K" && this->White == false){
-							temp->setPinned(this);
-							temp->updateMoves();
+							if(temp->isPinned() == nullptr){
+								temp->setPinned(this);
+								isPin = temp;
+							}
 						}
 						
 						break;
 					}
 				}
-				
+				}
 				downMoves.erase(downMoves.begin() + i + 1, downMoves.end());	
 			}
 
@@ -220,4 +248,8 @@ void Rook::updateMoves(){
 	rightMoves.clear();
 	upMoves.clear();
 	downMoves.clear();
+	
+	if(isPin != nullptr){
+		isPin->updateMoves();
+	}
 }
