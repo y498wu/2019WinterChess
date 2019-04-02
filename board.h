@@ -75,9 +75,10 @@ class Board {
   // When a colour resigns
   void resign(bool isWhite);
 
-  // print TextBoard when textOrGarphic is true by default
-  void printTextBoard(bool isTextDisplay);
-  
+  // print TextBoard when isTextDisplay is true by default
+  // print GraphicBoard when isTextDisplay is false
+  void printBoard(bool isTextDisplay);
+
   // void printGraphicBoard();
   void printScores();
    
@@ -85,3 +86,5 @@ class Board {
 
 std::ostream &operator<<(std::ostream &out, const Board &brd);
 
+
+#endif
