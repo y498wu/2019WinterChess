@@ -6,13 +6,13 @@
 #include <stack>
 #include <utility>
 
-#include "Position.h"
-#include "Pieces.h"
-#include "DisplaySuper.h"
-#include "Player.h"
+#include "position.h"
+#include "pieces.h"
+#include "textDisplay.h"
+#include "player.h"
 
 class Board {
-  vector<vector<Piece*>> pieces;
+  std::vector<std::vector<Piece*>> pieces;
   //so the reason we need triple pointers is because Piece is an abstract class so we can't make any 
   //piece objects however we can create piece pointers so basically the board is a a board of piece pointers.
   //and these piece pointers can point to any of the possible pieces, which is why the board dosen't need to
@@ -23,7 +23,7 @@ class Board {
 
   public:
   ~Board();
-  Board();
+  Board(int WIDTH = 8; int HEIGHT = 8);
 
   int WIDTH;
   int HEIGHT;
