@@ -75,10 +75,9 @@ class Board {
   // When a colour resigns
   void resign(bool isWhite);
 
-  // if a colour is undercheck
-  bool isCheck(bool isWhite);
   // print TextBoard when textOrGarphic is true by default
   void printTextBoard(bool isTextDisplay);
+  
   // void printGraphicBoard();
   void printScores();
    
@@ -86,5 +85,3 @@ class Board {
 
 std::ostream &operator<<(std::ostream &out, const Board &brd);
 
-
-#endif
