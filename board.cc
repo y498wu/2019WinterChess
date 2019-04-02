@@ -250,6 +250,8 @@ void Board::makeMove(Position start, Position end, string pieceType){
 		}
 	}
 	// check if the enemy colour's king is in checkmate
+	// This one need more implementations......
+	// such as draw state, restart te setup, display the board
 	if (isWhiteTurn && blackKing->isInCheckMate){
 		hasPlay = false;
 		++whiteScore;
@@ -259,6 +261,10 @@ void Board::makeMove(Position start, Position end, string pieceType){
 		++blackScore;
 		return;
 	}
+	// give the turn to the other colour
+	if (isWhiteTurn){
+		isWhiteTurn = false;
+	} else {
+		isWhiteTurn = true;
+	}
 }
-
-
