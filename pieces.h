@@ -13,7 +13,7 @@ class Pieces{
 	Position Location;
 	vector<Position> LegalMoves;
 	bool Protected;
-	Piece *Pinned;
+	Pieces *Pinned;
 	
 public: 
 	
@@ -23,11 +23,11 @@ public:
 	bool isWhite() const;
 	void setPos(Position newPos);
 	void setProtected(bool val);
-	void setPinned(Piece* pin);
+	void setPinned(Pieces* pin);
 	void resetProtectedPinned(); //Resets protected and pinned fields, should be called before updateMoves
-	bool getProtected() const;
-	Piece* getPinned() const;
-	
+	bool isProtected() const;
+	Pieces* isPinned() const;
+
 	//virtual methods, these need to be defined in each piece
 	virtual std::string checkType() const = 0;
 	virtual void updateMoves() = 0;	

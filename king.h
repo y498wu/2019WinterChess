@@ -11,11 +11,16 @@ class King: public Pieces{
 		
 	bool hasMoved;
 	bool inCheck;
-
+	bool inCheckMate;
+	
 public: 
 	
 	void updateMoves() override;
 	std::string checkType() const override;
+	
+	bool isInCheck() const;
+	bool isInCheckMate() const;
+	void putInCheck(bool check);
 	
 	King(Board *theBoard, bool White, Position Location);
 	~King();

@@ -1,23 +1,21 @@
-#ifndef PAWN_H
-#define PAWN_H
+#ifndef QUEEN_H
+#define QUEEN_H
 
-#include "pawn.cc"
+#include "queen.cc"
 #include "pieces.h"
 #include "position.h"
 #include <vector>
 #include <string>
 
-class Pawn: public Pieces{
+class Queen: public Pieces{
 		
-	bool hasMoved;
-	
 public: 
 	
-	Pawn(Board *theBoard, bool White, Position Location);
 	void updateMoves() override;
-	
 	std::string checkType() const override;
-	~Pawn();
+	
+	Queen(Board *theBoard, bool White, Position Location);
+	~Queen();
  
 };
 

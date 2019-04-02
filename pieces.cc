@@ -38,11 +38,11 @@ void Pieces::resetProtectedPinned(){
 	this->Pinned = nullptr;
 }
 
-bool Pieces::getProtected() const{
+bool Pieces::isProtected() const{
 	return this->Protected;
 }
 
-Pieces* Pieces::getPinned() const{
-	return this->Pinned;	
-}	
+Pieces* Pieces::isPinned() const{
+	return this->Pinned;
+}
 	

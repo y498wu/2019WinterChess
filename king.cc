@@ -14,6 +14,18 @@ std::string King::checkType() const{
 	return this->White ? "K" : "k";
 }
 
+bool King::isInCheck() const{
+	return this->inCheck;	
+}
+
+bool King::isInCheckMate() const{
+	return this->inCheckMate;		
+}
+
+void King::putInCheck(bool check){
+	this->inCheck = check;
+}
+
 void King::updateMoves(){
 	
 	vector<Position> possibleMoves;
@@ -39,20 +51,40 @@ void King::updateMoves(){
 		
 		if(temp != nullptr){//if there is a piece at the possible location
 			if((this->White && temp->isWhite()) || (this->White == false && temp->isWhite() == false)){
-				temp->setProtected(true); //NEEED TO ADD THIS IN PROPOSE AS AN IDEA				
+				temp->setProtected(true);		
 				possibleMoves.erase(possibleMoves.begin() + i);
 				size = possibleMoves.size();
 				i--;
 			}
-			else{ //this means that it is an enemy piece, check the protected field
-				
+			else if(temp->isProtected()){ //this means that it is an enemy piece, check the protected field
+				possibleMoves.erase(possibleMoves.begin() + i);
+				size = possibleMoves.size();
+				i--;					
 			}		
 		}		
 	}
 	
-	// step 3: (special for the king): check if there are pieces attacking  
+	// step 3: (special for the king): check if there are pieces attacking possible spots that king can move to 
 	
-	
+	for(int y = 0; y <= 7; y++){
+		for(int x = 0; x <= 7; x++){
+			Position current(x, y);
+			Pieces* temp = this->theBoard.atLocation(current);
+		
+			if(temp != nullptr){
+				if((this->White && temp->isWhite() == false) || (this->White == false && temp->isWhite())){
+					for(auto i = possibleMoves.begin(); i != possibleMoves.end(); ){
+						if(temp->canMove(i)){
+							i = possibleMoves.erase(i);
+						}
+						else{
+							++i;
+						}
+					}
+				}
+			}
+		}
+	}
 	// step 4: update LegalMoves
 	
 	this->LegalMoves.clear();
@@ -62,4 +94,9 @@ void King::updateMoves(){
 	}
 	
 	possibleMoves.clear();
+	
+	if(LegalMoves.size() == 0 && this->inCheck){
+		//might be checkmate
+		
+	}
 }
