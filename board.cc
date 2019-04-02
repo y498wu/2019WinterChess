@@ -6,9 +6,11 @@
 
 #include "Position.h"
 #include "Pieces.h"
-#include "DisplaySuper.h"
-#include "Player.h"
 #include "board.h"
+// .h that haven't been implemented
+#include "textDisplay.h"
+#include "graphicDisplay.h"
+#include "player.h"
 
 // we need the six types of pieces since we will allocate new pieces on board
 #include "king.h"
@@ -267,4 +269,28 @@ void Board::makeMove(Position start, Position end, string pieceType){
 	} else {
 		isWhiteTurn = true;
 	}
+}
+
+// This one need more implementations......
+// such as draw state, restart te setup, display the board
+void Board::resign(bool isWhite){
+	hasPlay = false;
+	if (isWhite){
+		++whiteScore;
+	} else {
+		++blackScore;
+	}
+	return;
+}
+
+void Board::printBoard(bool isTextDisplay){
+	if (isTextDisplay){
+		// implement tomorrow
+	}
+}
+
+void Board::printScores(){
+	cout << "Final Score:" << endl;
+	cout << "White: " << whiteScore << endl;
+	cout << "Black: " << blackScore << endl;
 }
