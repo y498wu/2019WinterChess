@@ -4,8 +4,8 @@
 #include <stack>
 #include <utility>
 
-#include "Position.h"
-#include "Pieces.h"
+#include "position.h"
+#include "pieces.h"
 #include "board.h"
 // .h that haven't been implemented
 #include "textDisplay.h"
@@ -294,3 +294,8 @@ void Board::printScores(){
 	cout << "White: " << whiteScore << endl;
 	cout << "Black: " << blackScore << endl;
 }
+
+
+
+
+
