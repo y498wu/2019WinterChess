@@ -22,13 +22,15 @@ using namespace std;
 
 Board::Board(int WIDTH, int HEIGHT) : WIDTH{8}, HEIGHT{8},
 hasSetup{false}, hasPlay{false}, whiteScore{0}, blackScore{0}, 
-textOrGraphic{true}, isWhiteTurn{true},
+textOrGraphic{true}, isWhiteTurn{true}, level{1},
 {
 	for(int i = 0; i < HEIGHT; i++){
 		for(int j = 0; j < WIDTH; j++){
 			pieces[i][j] = nullptr;
 		}
 	}
+	whiteKing = nullptr;
+	blackKing = nullptr;
 }
 
 // get the Piece* at pos
@@ -39,8 +41,9 @@ Piece* Board::atLocation(Position pos){
 // start setup mode
 void Board::setupStart(){
 	// if the play has started without setup, throw an error
-	if(hasPlay){
-		throw("The game starts without being set up!");
+	if (hasPlay){
+		cout << "The game starts without being set up!" << endl;
+		return;
 	}
 	hasSetup = true;
 }
@@ -49,15 +52,16 @@ void Board::setupStart(){
 void Board::addPieceSetup(string pieceType, Position pos){
 	// check if the setup stage has started
 	if (!hasSetup){
-		throw("The setup stage has not started! Call setupStart method!");
+		cout << "The setup stage has not started! Call setupStart method!" << endl;
+		return;
 	}
 
-	bool isWhite;
+	bool pieceIsWhite;
 	// check if the piece is white or black
 	if (pieceType[0] <= 'Z'){
-		isWhite = true;
+		pieceIsWhite = true;
 	} else {
-		isWhite = false;
+		pieceIsWhite = false;
 	}
 
     // if there is already a piece at pos, free this owner
@@ -66,19 +70,22 @@ void Board::addPieceSetup(string pieceType, Position pos){
 	}
 
 	// contruct a new piece pointer to the position on board
-	if (pieceType == "K" || pieceType == "k"){
-		// need to wait Eric for the constructor of King/Queen/...
-		atLocation(pos) = new King(this, isWhite, pos);
+	if (pieceType == "K"){
+		atLocation(pos) = new King(this, pieceIsWhite, pos);
+		whiteKing = atLocation(pos);
+	} else if (pieceType == "k"){
+		atLocation(pos) = new King(this, pieceIsWhite, pos);
+		blackKing = atLocation(pos);
 	} else if (pieceType == "Q" || pieceType == "q"){
-		atLocation(pos) = new Queen(this, isWhite, pos);
+		atLocation(pos) = new Queen(this, pieceIsWhite, pos);
 	} else if (pieceType == "R" || pieceType == "r"){
-		atLocation(pos) = new Rook(this, isWhite, pos);
+		atLocation(pos) = new Rook(this, pieceIsWhite, pos);
 	} else if (pieceType == "H" || pieceType == "h"){
-		atLocation(pos) = new Knight(this, isWhite, pos);
+		atLocation(pos) = new Knight(this, pieceIsWhite, pos);
 	} else if (pieceType == "B" || pieceType == "b"){
-		atLocation(pos) = new Bishop(this, isWhite, pos);
+		atLocation(pos) = new Bishop(this, pieceIsWhite, pos);
 	} else if (pieceType == "P" || pieceType == "p"){
-		atLocation(pos) = new Pawn(this, isWhite, pos);
+		atLocation(pos) = new Pawn(this, pieceIsWhite, pos);
 	}
 }
 
@@ -86,7 +93,8 @@ void Board::addPieceSetup(string pieceType, Position pos){
 void Board::removePieceSetup(Position pos){
 	// check if the setup stage has started
 	if (!hasSetup){
-		throw("The setup stage has not started! Call setupStart method!");
+		cout << "The setup stage has not started! Call setupStart method!" << endl;
+		return;
 	}
 
 	if(atLocation(pos)){
@@ -95,13 +103,14 @@ void Board::removePieceSetup(Position pos){
 }
 
 // determine whose turn to go next
-void colourSetup(bool isWhite){
+void colourSetup(bool colourIsWhite){
 	// check if the setup stage has started
 	if (!hasSetup){
-		throw("The setup stage has not started! Call setupStart method!");
+		cout << "The setup stage has not started! Call setupStart method!" << endl;
+		return;
 	}
 
-	if(isWhite){
+	if (colourIsWhite){
 		isWhiteTurn = true;
 	} else {
 		isWhiteTurn = false;
@@ -115,6 +124,7 @@ void originalSetup(){
 	pieces[0][2] = new Bishop(this, false, Position(2, 0));
 	pieces[0][3] = new Queen(this, false, Position(3, 0));
 	pieces[0][4] = new King(this, false, Position(4, 0));
+	blackKing = pieces[0][4];
 	pieces[0][5] = new Bishop(this, false, Position(5, 0));
 	pieces[0][6] = new Knight(this, false, Position(6, 0));
 	pieces[0][7] = new Rook(this, false, Position(7, 0));
@@ -132,31 +142,115 @@ void originalSetup(){
 	pieces[7][2] = new Bishop(this, true, Position(2, 7));
 	pieces[7][3] = new Queen(this, true, Position(3, 7));
 	pieces[7][4] = new King(this, true, Position(4, 7));
+	whiteKing = pieces[7][4];
 	pieces[7][5] = new Bishop(this, true, Position(5, 7));
 	pieces[7][6] = new Knight(this, true, Position(6, 7));
 	pieces[7][7] = new Rook(this, true, Position(7, 7));
 }
 
+// set the level
+void setLevel(int levelInput){
+	level = levelInput;
+}
+
+void updateBoard(){
+	// go through all the Piece* to reset the protected&pinned status
+	for(int y = 0; y <= 7; y++){
+		for(int x = 0; x <= 7; x++){
+			Pieces* temp = pieces[y][x];
+			temp->resetProtectedPinned();
+		}	
+	}
+	// go through all the Piece* to update their legalMoves
+	for(int y = 0; y <= 7; y++){
+		for(int x = 0; x <= 7; x++){
+			Pieces* temp = pieces[y][x];
+			temp->updateMoves();
+		}	
+	}
+	whiteKing->updateMoves();
+	blackKing->updateMoves();
+}
+
 // makeMove method needs to consider other cases
 void Board::makeMove(Position start, Position end, string pieceType){
-	// if there is already a piece at Position end, throw an error
-	if(!atLocation(start)){
-		throw("There is no piece at Position start!");
+	// if there is no piece at Position start, throw an error
+	if (!atLocation(start)){
+		cout << "There is no piece at Position start!" << endl;
+		return;
 	}
-
-	// move the piece pointer at Position start to Position end
-	pieces[end.getY][end.getX] = move(pieces[start.getY][start.getX];)
-
-	// free the owner piece at Position start
-	delete pieces[start.getY][start.getX];
-
-    bool isWhite;
-	// check if the piece is white or blackß
-	if (pieceType[0] <= 'Z'){
-		isWhite = true;
+	// check the piece at Position start's colour
+	bool pieceIsWhite;
+	if (atLocation(start)->checkType[0] <= 'Z'){
+		pieceIsWhite = true;
 	} else {
-		isWhite = false;
+		pieceIsWhite = false;
 	}
-
-	// When the piece is a pawn, upgrade the pawn to another piece except King
+	// check if it's the piece at Position start's colour's turn
+	if (pieceIsWhite != isWhiteTurn){
+		cout << "It's not this colour's turn to move a piece!" << endl
+		return;
+	}
+	// check if the move is valid
+	if(!atLocation(start)->canMove(atLocation(end))){
+		cout << "This is not a legal move!" << endl
+		return;
+	}
+	// check if this colour's king is in check
+	King* currentKing;
+	if (isWhiteTurn){
+		currentKing = whiteKing;
+	} else {
+		currentKing = blackKing;
+	}
+	// if currentKing is in check, make the move first
+	// and then check if this move enable the currentKing to escape from check
+	Piece* temp;
+	if (currentKing->isInCheck){
+		// move atLocation(end) to temp piece pointer
+	    temp = pieces[end.getY][end.getX];
+		// move atLocation(start) to atLocation(end)
+		// move will automatically free atLocation(start)
+		pieces[end.getY][end.getX] = move(pieces[start.getY][start.getX]);
+		// update the board after this move
+		updateBoard();
+		// check if the current king is still in check
+		if (currentKing->isInCheck){
+			// if still in check, reverse the move back and throw an error
+			pieces[start.getY][start.getX] = move(pieces[end.getY][end.getX]);
+			pieces[end.getY][end.getX] = temp;
+			cout << "You can't make this move since you're in check!" << endl;
+			return;
+		} 
+	} else {
+		// if currentKing isn't in check, just update the board
+		updateBoard();
+	}
+	// After the move, we check if the pawn needs promotion
+	// if atLocation(end) is a white pawn and it's white's turn and the pieceType is white
+	// or if atLocation(end) is a black pawn and it's black's turn
+	if ((atLocation(end)->checkType == "P" && isWhiteTurn && end.getY == 7 && pieceType[0] <= 'Z') 
+		|| (atLocation(end)->checkType == "p" && !isWhiteTurn && end.getY == 0)){
+		delete pieces[pos.getY][pos.getX];
+		if (pieceType == "Q" || pieceType == "q"){
+			atLocation(end) = new Queen(this, pieceIsWhite, pos);
+		} else if (pieceType == "R" || pieceType == "q"){
+			atLocation(end) = new Rook(this, pieceIsWhite, pos);
+		} else if (pieceType == "H" || pieceType == "q"){
+			atLocation(end) = new Knight(this, pieceIsWhite, pos);
+		} else if (pieceType == "B" || pieceType == "q"){
+			atLocation(end) = new Bishop(this, pieceIsWhite, pos);
+		}
+	}
+	// check if the enemy colour's king is in checkmate
+	if (isWhiteTurn && blackKing->isInCheckMate){
+		hasPlay == false;
+		++whiteScore;
+		return;
+	} else if (!isWhiteTurn && whiteKing->isInCheckMate){
+		hasPlay == false;
+		++blackScore;
+		return;
+	}
 }
+
