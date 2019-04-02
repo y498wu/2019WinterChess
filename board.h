@@ -60,6 +60,9 @@ class Board {
   // setup stage: user can choose the original setup
   void originalSetup();
 
+  // play stage: setup is done and start to play
+  void startPlay();
+
   // set the level
   void setLevel(int levelInput);
 
