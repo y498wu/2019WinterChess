@@ -18,6 +18,9 @@ class Board {
   //and these piece pointers can point to any of the possible pieces, which is why the board dosen't need to
   //know what types of pieces they are, that is all handeled by the piece class and its virtual methods
 
+  King* whiteKing;
+  King* blackKing;
+
   public:
   ~Board();
   Board();
@@ -31,8 +34,10 @@ class Board {
   int whiteScore;
   int blackScore;
 
-  bool textOrGraphic;
+  bool isTextDisplay;
   bool isWhiteTurn;
+
+  int level;
 
   Board(int WIDTH = 8, int HEIGHT = 8);
 
@@ -55,17 +60,22 @@ class Board {
   // setup stage: user can choose the original setup
   void originalSetup();
 
+  // set the level
+  void setLevel(int levelInput);
+
+  // go through all the Piece* to update the board
+  void updateBoard();
+
   // makeMove method
   void makeMove(Position start, Position end, std::string pieceType);
   
   // When a colour resigns
   void resign(bool isWhite);
-  // set the level
-  void setLevel(int level);
+
   // if a colour is undercheck
   bool isCheck(bool isWhite);
   // print TextBoard when textOrGarphic is true by default
-  void printTextBoard(bool textOrGraphic);
+  void printTextBoard(bool isTextDisplay);
   // void printGraphicBoard();
   void printScores();
    
