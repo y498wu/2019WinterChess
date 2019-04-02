@@ -39,7 +39,7 @@ Piece* Board::atLocation(Position pos){
 }
 
 // start setup mode
-void Board::setupStart(){
+void Board::startSetup(){
 	// if the play has started without setup, throw an error
 	if (hasPlay){
 		cout << "The game starts without being set up!" << endl;
@@ -52,7 +52,7 @@ void Board::setupStart(){
 void Board::addPieceSetup(string pieceType, Position pos){
 	// check if the setup stage has started
 	if (!hasSetup){
-		cout << "The setup stage has not started! Call setupStart method!" << endl;
+		cout << "The setup stage has not started! Call startSetup method!" << endl;
 		return;
 	}
 
@@ -103,7 +103,7 @@ void Board::removePieceSetup(Position pos){
 }
 
 // determine whose turn to go next
-void colourSetup(bool colourIsWhite){
+void Board::colourSetup(bool colourIsWhite){
 	// check if the setup stage has started
 	if (!hasSetup){
 		cout << "The setup stage has not started! Call setupStart method!" << endl;
@@ -117,7 +117,7 @@ void colourSetup(bool colourIsWhite){
 	}
 }
 
-void originalSetup(){
+void Board::originalSetup(){
 	// set the black side at row #0
 	pieces[0][0] = new Rook(this, false, Position(0, 0));
 	pieces[0][1] = new Knight(this, false, Position(1, 0));
@@ -148,12 +148,19 @@ void originalSetup(){
 	pieces[7][7] = new Rook(this, true, Position(7, 7));
 }
 
+void Board::startPlay(){
+	if (!hasSetup){
+		cout << "The board is not set up!" << endl;
+	}
+	hasPlay = true;
+}
+
 // set the level
-void setLevel(int levelInput){
+void Board::setLevel(int levelInput){
 	level = levelInput;
 }
 
-void updateBoard(){
+void Board::updateBoard(){
 	// go through all the Piece* to reset the protected&pinned status
 	for(int y = 0; y <= 7; y++){
 		for(int x = 0; x <= 7; x++){
@@ -244,13 +251,14 @@ void Board::makeMove(Position start, Position end, string pieceType){
 	}
 	// check if the enemy colour's king is in checkmate
 	if (isWhiteTurn && blackKing->isInCheckMate){
-		hasPlay == false;
+		hasPlay = false;
 		++whiteScore;
 		return;
 	} else if (!isWhiteTurn && whiteKing->isInCheckMate){
-		hasPlay == false;
+		hasPlay = false;
 		++blackScore;
 		return;
 	}
 }
+
 
