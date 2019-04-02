@@ -37,7 +37,7 @@ textOrGraphic{true}, isWhiteTurn{true}, level{1},
 
 // get the Piece* at pos
 Piece* Board::atLocation(Position pos){
-	return pieces[pos.getY][pos.getX];
+	return pieces[pos.getY()][pos.getX()];
 }
 
 // start setup mode
@@ -68,7 +68,7 @@ void Board::addPieceSetup(string pieceType, Position pos){
 
     // if there is already a piece at pos, free this owner
 	if(atLocation(pos)){
-		delete pieces[pos.getY][pos.getX];
+		delete pieces[pos.getY()][pos.getX()];
 	}
 
 	// contruct a new piece pointer to the position on board
@@ -100,7 +100,7 @@ void Board::removePieceSetup(Position pos){
 	}
 
 	if(atLocation(pos)){
-		delete pieces[pos.getY][pos.getX];
+		delete pieces[pos.getY()][pos.getX()];
 	}
 }
 
@@ -201,7 +201,7 @@ void Board::makeMove(Position start, Position end, string pieceType){
 		return;
 	}
 	// check if the move is valid
-	if(!atLocation(start)->canMove(atLocation(end))){
+	if(!atLocation(start)->canMove(end)){
 		cout << "This is not a legal move!" << endl
 		return;
 	}
@@ -214,51 +214,60 @@ void Board::makeMove(Position start, Position end, string pieceType){
 	}
 	// if currentKing is in check, make the move first
 	// and then check if this move enable the currentKing to escape from check
-	Piece* temp;
-	if (currentKing->isInCheck){
+	Piece* temp = nullptr;
+	if (currentKing->isInCheck()){
 		// move atLocation(end) to temp piece pointer
-	    temp = pieces[end.getY][end.getX];
+	    temp = atLocation(end);
 		// move atLocation(start) to atLocation(end)
 		// move will automatically free atLocation(start)
-		pieces[end.getY][end.getX] = move(pieces[start.getY][start.getX]);
+		pieces[end.getY()][end.getX()] = atLocation(start);
+		pieces[start.getY()][start.getX()] = nullptr;
 		// update the board after this move
 		updateBoard();
 		// check if the current king is still in check
-		if (currentKing->isInCheck){
+		if (currentKing->isInCheck()){
 			// if still in check, reverse the move back and throw an error
-			pieces[start.getY][start.getX] = move(pieces[end.getY][end.getX]);
-			pieces[end.getY][end.getX] = temp;
+			pieces[start.getY()][start.getX()] = atLocation(end);
+			pieces[end.getY()][end.getX()] = nullptr;
+			pieces[end.getY()][end.getX()] = temp;
 			cout << "You can't make this move since you're in check!" << endl;
+			temp = nullptr;
 			return;
-		} 
+		} else {
+			delete temp;
+		}
 	} else {
 		// if currentKing isn't in check, just update the board
+		delete pieces[end.getY()][end.getX()];
+		pieces[end.getY()][end.getX()] = nullptr;
+		pieces[end.getY()][end.getX()] = pieces[start.getY()][start.getX()];
+		pieces[start.getY()][start.getX()] = nullptr;
 		updateBoard();
 	}
 	// After the move, we check if the pawn needs promotion
 	// if atLocation(end) is a white pawn and it's white's turn and the pieceType is white
 	// or if atLocation(end) is a black pawn and it's black's turn
-	if ((atLocation(end)->checkType == "P" && isWhiteTurn && end.getY == 7 && pieceType[0] <= 'Z') 
-		|| (atLocation(end)->checkType == "p" && !isWhiteTurn && end.getY == 0)){
-		delete pieces[pos.getY][pos.getX];
+	if ((atLocation(end)->checkType == "P" && isWhiteTurn && end.getY() == 7 && pieceType[0] <= 'Z') 
+		|| (atLocation(end)->checkType == "p" && !isWhiteTurn && end.getY() == 0)){
+		delete pieces[pos.getY()][pos.getX()];
 		if (pieceType == "Q" || pieceType == "q"){
 			atLocation(end) = new Queen(this, pieceIsWhite, pos);
-		} else if (pieceType == "R" || pieceType == "q"){
+		} else if (pieceType == "R" || pieceType == "r"){
 			atLocation(end) = new Rook(this, pieceIsWhite, pos);
-		} else if (pieceType == "H" || pieceType == "q"){
+		} else if (pieceType == "H" || pieceType == "h"){
 			atLocation(end) = new Knight(this, pieceIsWhite, pos);
-		} else if (pieceType == "B" || pieceType == "q"){
+		} else if (pieceType == "B" || pieceType == "b"){
 			atLocation(end) = new Bishop(this, pieceIsWhite, pos);
 		}
 	}
 	// check if the enemy colour's king is in checkmate
 	// This one need more implementations......
 	// such as draw state, restart te setup, display the board
-	if (isWhiteTurn && blackKing->isInCheckMate){
+	if (isWhiteTurn && blackKing->isInCheckMate()){
 		hasPlay = false;
 		++whiteScore;
 		return;
-	} else if (!isWhiteTurn && whiteKing->isInCheckMate){
+	} else if (!isWhiteTurn && whiteKing->isInCheckMate()){
 		hasPlay = false;
 		++blackScore;
 		return;
