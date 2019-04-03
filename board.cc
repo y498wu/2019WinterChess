@@ -22,7 +22,7 @@
 
 using namespace std;
 
-Board::Board(int WIDTH, int HEIGHT) : WIDTH{8}, HEIGHT{8},
+Board::Board() : WIDTH{8}, HEIGHT{8},
 hasSetup{false}, hasPlay{false}, whiteScore{0}, blackScore{0}, 
 textOrGraphic{true}, isWhiteTurn{true}, level{1},
 {
@@ -33,6 +33,16 @@ textOrGraphic{true}, isWhiteTurn{true}, level{1},
 	}
 	whiteKing = nullptr;
 	blackKing = nullptr;
+}
+
+Board::~Board(){
+	// deallocate all Piece* at the 2D board
+	for(int i = 0; i < HEIGHT; i++){
+		for(int j = 0; j < WIDTH; j++){
+			delete pieces[i][j];
+		}
+	}
+	// whiteKing and blackKing are allocated on stack so no need to delete
 }
 
 // get the Piece* at pos
