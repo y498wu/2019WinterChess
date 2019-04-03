@@ -22,8 +22,8 @@ class Board {
   King* blackKing;
 
   public:
+  Board();
   ~Board();
-  Board(int WIDTH = 8; int HEIGHT = 8);
 
   int WIDTH;
   int HEIGHT;
