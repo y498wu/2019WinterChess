@@ -11,7 +11,7 @@ HumanPlayer::HumanPlayer(bool playerIsWhite, Board* board) :
 playerIsWhite{playerIsWhite}, board{board}, playerScore{0} {}
 
 void HumanPlayer::makeMove(Position start, Position end, string pieceType){
-	if (start->isValid && end->isValid){
+	if (start->isValid() && end->isValid()){
 		cout << "Your input position is incorrect!" << endl;
 		return;
 	}
