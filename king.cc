@@ -26,6 +26,11 @@ void King::putInCheck(bool check){
 	this->inCheck = check;
 }
 
+void King::putInCheckMate(bool check){
+	this->inCheckMate = check;
+}
+
+
 void King::updateMoves(){
 	
 	vector<Position> possibleMoves;

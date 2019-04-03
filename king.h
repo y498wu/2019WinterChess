@@ -21,6 +21,7 @@ public:
 	bool isInCheck() const;
 	bool isInCheckMate() const;
 	void putInCheck(bool check);
+	void putInCheckMate(bool check);
 	
 	King(Board *theBoard, bool White, Position Location);
 	~King();
