@@ -13,14 +13,18 @@ class HumanPlayer{
 	// a pointer to the board the player is on
 	Board* board;
 	bool playerIsWhite;
+	float playerScore;
 
 public:
-	int playerScore;
+	
 
 	// constructor
 	HumanPlayer(bool playerIsWhite, Board* board);
 
-	void makeMove(Position start, Position end, string pieceType);
+	std::string makeMove(Position start, Position end, string pieceType);
+	
+	void setScore(float i);
+	float getScore() const;
 }
 
 #endif

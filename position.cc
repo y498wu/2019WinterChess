@@ -23,3 +23,10 @@ bool Position::equals(Position pos) const{
 		
 	return false;	
 }
+
+bool Position::isValid() const{
+	if(this->x >= 0 && this->x <= 7 && this->y >= 0 && this->y <= 7){
+		return true;
+	}
+	return false;
+}

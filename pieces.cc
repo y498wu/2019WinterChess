@@ -36,6 +36,7 @@ void Pieces::setPinned(Piece* pin){
 void Pieces::resetProtectedPinned(){
 	this->Protected(false);
 	this->Pinned = nullptr;
+	
 }
 
 bool Pieces::isProtected() const{
@@ -44,5 +45,13 @@ bool Pieces::isProtected() const{
 
 Pieces* Pieces::isPinned() const{
 	return this->Pinned;
+}
+
+int getMoveCount() const{
+	return this->availableMoveCount;
+}
+
+vector<Position> getLegalMoves() const{
+	return this->LegalMoves;
 }
 	

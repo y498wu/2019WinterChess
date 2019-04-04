@@ -28,7 +28,6 @@ class Board {
   int WIDTH;
   int HEIGHT;
 
-  bool hasSetup;
   bool hasPlay;
 
   int whiteScore;
@@ -44,9 +43,6 @@ class Board {
   // Get the piece pointer at pos
   Piece* atLocation(Position pos);
 
-  // start setup mode
-  void startSetup();
-
   // setup stage: add a piece at pos 
   // The board will automatically remove the piece on pos when it's adding a new piece there
   void addPieceSetup(std::string pieceType, Position pos);
@@ -55,36 +51,20 @@ class Board {
   void removePieceSetup(Position pos);
 
   // setup stage: which colour's turn to go next
-  void colourSetup(bool isWhite);
+  void setTurn(bool isWhite);
+  
+  //getters for kings, returns white and black king pointers
+  King* WhiteKing() const;
+  King* BlackKing() const;
 
   // setup stage: user can choose the original setup
   void originalSetup();
-
-  // play stage: setup is done and start to play
-  void startPlay();
-
-  // set the level
-  void setLevel(int levelInput);
 
   // go through all the Piece* to update the board
   void updateBoard();
 
   // makeMove method
-  void makeMove(Position start, Position end, std::string pieceType);
-  
-  // When a colour resigns
-  void resign(bool isWhite);
-
-  // print TextBoard when isTextDisplay is true by default
-  // print GraphicBoard when isTextDisplay is false
-  void printBoard(bool isTextDisplay);
-
-  // void printGraphicBoard();
-  void printScores();
-   
+  std::string makeMove(Position start, Position end, std::string pieceType); 
 };
-
-std::ostream &operator<<(std::ostream &out, const Board &brd);
-
 
 #endif

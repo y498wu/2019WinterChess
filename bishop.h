@@ -9,6 +9,8 @@
 
 class Bishop: public Pieces{
 		
+	void helper_RemoveInvalid(vector<Position> &vec);
+	
 public: 
 	
 	void updateMoves() override;

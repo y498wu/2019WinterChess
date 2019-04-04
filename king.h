@@ -8,9 +8,9 @@
 #include <string>
 
 class King: public Pieces{
-		
 	bool hasMoved;
-	bool inCheck;
+	Piece* inCheck;
+	bool inStaleMate;
 	bool inCheckMate;
 	
 public: 
@@ -19,10 +19,10 @@ public:
 	std::string checkType() const override;
 	
 	bool isInCheck() const;
+	bool isInStaleMate() const;
 	bool isInCheckMate() const;
-	void putInCheck(bool check);
-	void putInCheckMate(bool check);
-	
+	void putInCheck(Piece* check);
+		
 	King(Board *theBoard, bool White, Position Location);
 	~King();
  

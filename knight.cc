@@ -81,7 +81,7 @@ void Knight::updateMoves(){
 	
 	for(int i = 0; i < size ; ++i){
 		
-		Pieces* temp =  this->theBoard.atLocation(possibleMoves.at(i));
+		Pieces* temp =  this->theBoard->atLocation(possibleMoves.at(i));
 		
 		if(temp != nullptr){//if there is a piece at the possible location
 			if((this->White && temp->isWhite()) || (this->White == false && temp->isWhite() == false)){
@@ -92,8 +92,8 @@ void Knight::updateMoves(){
 				
 			}
 			else if(temp->checkType() = "K" || temp->checkType() = "k"){
-				King* tempKing = temp;
-				tempKing->putInCheck(true);
+				King* tempKing = dynamic_cast<King*>(temp);
+				tempKing->putInCheck(this);
 			}
 		}	
 				
@@ -113,6 +113,7 @@ void Knight::updateMoves(){
 		this->LegalMoves.emplace_back(i);
 	}
 	
+	this->availableMoveCount = LegalMoves.size();
 	possibleMoves.clear();
 	
 }

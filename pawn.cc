@@ -25,26 +25,30 @@ void Pawn::updateMoves(){
 	
 		int x = this->Location.getX();
 		int y = this->Location.getY() - 1;
-	
-		possibleForwardMoves.emplace_back(new Position(x, y));
+		
+		if(x >= 0 && x <= 7 && y >= 0 && y <= 7){
+			possibleForwardMoves.emplace_back(new Position(x, y));
+		}
 		
 		if(this->hasMoved == false){
 			y = this->Location.getY() - 2;
-	
-			possibleForwardMoves.emplace_back(new Position(x, y));
+			
+			if(x >= 0 && x <= 7 && y >= 0 && y <= 7){
+				possibleForwardMoves.emplace_back(new Position(x, y));
+			}
 		}
 		
 		y = this->Location.getY() - 1;
 		x = this->Location.getX() - 1;
 		
-		if(x >= 0 && x <= 7){
+		if(x >= 0 && x <= 7 && y >= 0 && y <= 7){
 			possibleAttackMoves.emplace_back(new Position(x, y);
 		}
 		
 		y = this->Location.getY() - 1;
 		x = this->Location.getX() + 1;
 		
-		if(x >= 0 && x <=7){
+		if(x >= 0 && x <= 7 && y >= 0 && y <= 7){
 			possibleAttackMoves.emplace_back(new Position(x, y);
 		}
 	}
@@ -53,26 +57,30 @@ void Pawn::updateMoves(){
 		int x = this->Location.getX();
 		int y = this->Location.getY() + 1;
 	
-		possibleForwardMoves.emplace_back(new Position(x, y));
+		if(x >= 0 && x <= 7 && y >= 0 && y <= 7){
+			possibleForwardMoves.emplace_back(new Position(x, y));
+		}
 		
 		if(this->hasMoved == false){
 			x = this->Location.getX();
 			y = this->Location.getY() + 2;
-	
-			possibleForwardMoves.emplace_back(new Position(x, y));
+			
+			if(x >= 0 && x <= 7 && y >= 0 && y <= 7){
+				possibleForwardMoves.emplace_back(new Position(x, y));
+			}
 		}
 		
 		y = this->Location.getY() + 1;
 		x = this->Location.getX() - 1;
 		
-		if(x >= 0 && x <= 7){
+		if(x >= 0 && x <= 7 && y >= 0 && y <= 7){
 			possibleAttackMoves.emplace_back(new Position(x, y);
 		}
 		
 		y = this->Location.getY() + 1;
 		x = this->Location.getX() + 1;
 		
-		if(x >= 0 && x <= 7){
+		if(x >= 0 && x <= 7 && y >= 0 && y <= 7){
 			possibleAttackMoves.emplace_back(new Position(x, y);
 		}
 		
@@ -84,7 +92,7 @@ void Pawn::updateMoves(){
 	
 	for(int i = 0; i < size ; ++i){
 		
-		Pieces* temp =  this->theBoard.atLocation(possibleForwardMoves.at(i));
+		Pieces* temp =  this->theBoard->atLocation(possibleForwardMoves.at(i));
 		
 		if(temp != nullptr){//if there is a piece at the possible location
 			possibleForwardMoves.erase(possibleForwardMoves.begin() + i, possibleForwardMoves.end());
@@ -96,7 +104,7 @@ void Pawn::updateMoves(){
 	
 	for(int i = 0; i < size ; ++i){
 		
-		Pieces* temp =  this->theBoard.atLocation(possibleAttackMoves.at(i));
+		Pieces* temp =  this->theBoard->atLocation(possibleAttackMoves.at(i));
 		
 		if(temp == nullptr){
 			possibleAttackMoves.erase(possibleAttackMoves.begin() + i);
@@ -112,8 +120,8 @@ void Pawn::updateMoves(){
 				
 			}
 			else if(temp->checkType() = "K" || temp->checkType() = "k"){
-				King* tempKing = temp;
-				tempKing->putInCheck(true);
+				King* tempKing = dynamic_cast<King*>(temp);
+				tempKing->putInCheck(this);
 			}
 		}
 		
@@ -137,6 +145,7 @@ void Pawn::updateMoves(){
 		this->LegalMoves.emplace_back(i);
 	}
 	
+	this->availableMoveCount = LegalMoves.size();
 	possibleForwardMoves.clear();
 	possibleAttackMoves.clear();
 	

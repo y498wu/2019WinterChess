@@ -10,10 +10,17 @@
 HumanPlayer::HumanPlayer(bool playerIsWhite, Board* board) : 
 playerIsWhite{playerIsWhite}, board{board}, playerScore{0} {}
 
-void HumanPlayer::makeMove(Position start, Position end, string pieceType){
+std::string HumanPlayer::makeMove(Position start, Position end, string pieceType){
 	if (start->isValid() && end->isValid()){
-		cout << "Your input position is incorrect!" << endl;
-		return;
+		return "invalid input";
 	}
-	board->makeMove(Position start, Position end, string pieceType);
+	return board->makeMove(Position start, Position end, string pieceType);
+}
+
+void setScore(float i){
+	playerScore = i;
+}
+
+float getScore() const{
+	return playerScore;		
 }

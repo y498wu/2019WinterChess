@@ -16,8 +16,7 @@ public:
 	void setX(int val);
 	void setY(int val);
 	bool equals(Position pos) const;
+	bool isValid() const;
  
 };
-
-
 #endif

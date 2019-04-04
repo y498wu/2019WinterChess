@@ -10,6 +10,9 @@
 class Rook: public Pieces{
 		
 	bool hasMoved;
+	
+	void helper_RemoveInvalid(vector<Position> &vec);
+	
 
 public: 
 	

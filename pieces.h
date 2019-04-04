@@ -8,12 +8,14 @@
 
 class Pieces{
 		
+protected:		
 	Board *theBoard;
 	bool White;
 	Position Location;
 	vector<Position> LegalMoves;
 	bool Protected;
 	Pieces *Pinned;
+	int availableMoveCount;
 	
 public: 
 	
@@ -27,6 +29,8 @@ public:
 	void resetProtectedPinned(); //Resets protected and pinned fields, should be called before updateMoves
 	bool isProtected() const;
 	Pieces* isPinned() const;
+	int getMoveCount() const;
+	vector<Position> getLegalMoves() const;
 
 	//virtual methods, these need to be defined in each piece
 	virtual std::string checkType() const = 0;

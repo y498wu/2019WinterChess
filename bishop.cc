@@ -13,6 +13,51 @@ std::string Bishop::checkType() const{
 	return this->White ? "B" : "b";
 }
 
+
+void Bishop::helper_RemoveInvalid(vector<Position> &vec){
+	
+	int size = vec.size();
+	
+	for(int i = 0; i < size ; ++i){
+		
+		Pieces* temp =  this->theBoard->atLocation(vec.at(i));
+		
+		if(temp != nullptr){//if there is a piece at the possible location
+			if((this->White && temp->isWhite()) || (this->White == false && temp->isWhite() == false)){
+				temp->setProtected(true);			
+				vec.erase(vec.begin() + i, vec.end());
+				
+			}
+			else{ //this means that it is an enemy piece, can move to its position, check for pinning
+			
+				if(temp->checkType() = "K" || temp->checkType() = "k"){
+					King* tempKing = dynamic_cast<King*>(temp);
+					tempKing->putInCheck(this);
+				}else{
+				for(int j = i+1; j < size; j++){//check if the king is the next piece behind temp
+					Pieces* isKing = this->theBoard.atLocation(vec.at(j));
+					
+					//if the first piece behind temp is the enemy king
+					if(isKing != nullptr ){
+						if((isKing->checkType() == "k" && this->White) || isKing->checkType() == "K" && this->White == false){
+							if(temp->isPinned() == nullptr){
+								temp->setPinned(this);
+								isPin = temp;
+							}
+						}
+						
+						break;
+					}
+				}
+				}
+				vec.erase(vec.begin() + i + 1, vec.end());	
+			}
+
+			break;		
+		}		
+	}
+}
+
 void Bishop::updateMoves(){
 	
 	Pieces* isPin = nullptr;
@@ -75,174 +120,10 @@ void Bishop::updateMoves(){
 	
 	//step 2: check if there are pieces occupying any of the possible locations
 	
-	int size = leftUpMoves.size();
-	
-	for(int i = 0; i < size ; ++i){
-		
-		Pieces* temp =  this->theBoard.atLocation(leftUpMoves.at(i));
-		
-		if(temp != nullptr){//if there is a piece at the possible location
-			if((this->White && temp->isWhite()) || (this->White == false && temp->isWhite() == false)){
-				temp->setProtected(true);			
-				leftUpMoves.erase(leftUpMoves.begin() + i, leftUpMoves.end());
-				
-			}
-			else{ //this means that it is an enemy piece, can move to its position, check for pinning
-				
-				if(temp->checkType() = "K" || temp->checkType() = "k"){
-					King* tempKing = temp;
-					tempKing->putInCheck(true);
-				}else{
-				
-				for(int j = i+1; j < size; j++){//check if the king is the next piece behind temp
-					Pieces* isKing = this->theBoard.atLocation(leftUpMoves.at(j));
-					
-					//if the first piece behind temp is the enemy king
-					if(isKing != nullptr ){
-						if((isKing->checkType() == "k" && this->White) || isKing->checkType() == "K" && this->White == false){
-							if(temp->isPinned() == nullptr){
-								temp->setPinned(this);
-								isPin = temp;
-							}
-						}
-						
-						break;
-					}
-				}
-				}
-				
-				leftUpMoves.erase(leftUpMoves.begin() + i + 1, leftUpMoves.end());	
-			}
-
-			break;		
-		}		
-	}
-	
-	size = rightUpMoves.size();
-	
-	for(int i = 0; i < size ; ++i){
-		
-		Pieces* temp =  this->theBoard.atLocation(rightUpMoves.at(i));
-		
-		if(temp != nullptr){//if there is a piece at the possible location
-			if((this->White && temp->isWhite()) || (this->White == false && temp->isWhite() == false)){
-				temp->setProtected(true);			
-				rightUpMoves.erase(rightUpMoves.begin() + i, rightUpMoves.end());
-				
-			}
-			else{ //this means that it is an enemy piece, can move to its position, check for pinning
-				
-				if(temp->checkType() = "K" || temp->checkType() = "k"){
-					King* tempKing = temp;
-					tempKing->putInCheck(true);
-				}else{
-					
-				for(int j = i+1; j < size; j++){//check if the king is the next piece behind temp
-					Pieces* isKing = this->theBoard.atLocation(rightUpMoves.at(j));
-					
-					//if the first piece behind temp is the enemy king
-					if(isKing != nullptr ){
-						if((isKing->checkType() == "k" && this->White) || isKing->checkType() == "K" && this->White == false){
-							if(temp->isPinned() == nullptr){
-								temp->setPinned(this);
-								isPin = temp;
-							}
-						}
-						
-						break;
-					}
-				}
-				}
-				rightUpMoves.erase(rightUpMoves.begin() + i + 1, rightUpMoves.end());	
-			}
-
-			break;		
-		}		
-	}
-	
-	size = leftDownMoves.size();
-	
-	for(int i = 0; i < size ; ++i){
-		
-		Pieces* temp =  this->theBoard.atLocation(leftDownMoves.at(i));
-		
-		if(temp != nullptr){//if there is a piece at the possible location
-			if((this->White && temp->isWhite()) || (this->White == false && temp->isWhite() == false)){
-				temp->setProtected(true);			
-				leftDownMoves.erase(leftDownMoves.begin() + i, leftDownMoves.end());
-				
-			}
-			else{ //this means that it is an enemy piece, can move to its position, check for pinning
-				
-				if(temp->checkType() = "K" || temp->checkType() = "k"){
-					King* tempKing = temp;
-					tempKing->putInCheck(true);
-				}else{
-				
-				for(int j = i+1; j < size; j++){//check if the king is the next piece behind temp
-					Pieces* isKing = this->theBoard.atLocation(leftDownMoves.at(j));
-					
-					//if the first piece behind temp is the enemy king
-					if(isKing != nullptr ){
-						if((isKing->checkType() == "k" && this->White) || isKing->checkType() == "K" && this->White == false){
-							if(temp->isPinned() == nullptr){
-								temp->setPinned(this);
-								isPin = temp;
-							}
-						}
-						
-						break;
-					}
-				}
-				}
-				leftDownMoves.erase(leftDownMoves.begin() + i + 1, leftDownMoves.end());	
-			}
-
-			break;		
-		}		
-	}
-	
-	size = rightDownMoves.size();
-	
-	for(int i = 0; i < size ; ++i){
-		
-		Pieces* temp =  this->theBoard.atLocation(rightDownMoves.at(i));
-		
-		if(temp != nullptr){//if there is a piece at the possible location
-			if((this->White && temp->isWhite()) || (this->White == false && temp->isWhite() == false)){
-				temp->setProtected(true);			
-				rightDownMoves.erase(rightDownMoves.begin() + i, rightDownMoves.end());
-				
-			}
-			else{ //this means that it is an enemy piece, can move to its position, check for pinning
-				
-				if(temp->checkType() = "K" || temp->checkType() = "k"){
-					King* tempKing = temp;
-					tempKing->putInCheck(true);
-				}else{
-				
-				for(int j = i+1; j < size; j++){//check if the king is the next piece behind temp
-					Pieces* isKing = this->theBoard.atLocation(rightDownMoves.at(j));
-					
-					//if the first piece behind temp is the enemy king
-					if(isKing != nullptr ){
-						if((isKing->checkType() == "k" && this->White) || isKing->checkType() == "K" && this->White == false){
-							if(temp->isPinned() == nullptr){
-								temp->setPinned(this);
-								isPin = temp;
-							}
-						}
-						
-						break;
-					}
-				}
-				}
-				rightDownMoves.erase(rightDownMoves.begin() + i + 1, rightDownMoves.end());	
-			}
-
-			break;		
-		}		
-	}
+	helper_RemoveInvalid(leftUpMoves);
+	helper_RemoveInvalid(rightUpMoves);
+	helper_RemoveInvalid(leftDownMoves);
+	helper_RemoveInvalid(rightDownMoves);
 	
 	// step 3: check for pinning
 	
@@ -288,6 +169,7 @@ void Bishop::updateMoves(){
 		this->LegalMoves.emplace_back(i);
 	}
 	
+	this->availableMoveCount = LegalMoves.size();
 	leftUpMoves.clear();
 	rightUpMoves.clear();
 	leftDownMoves.clear();
