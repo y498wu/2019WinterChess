@@ -47,7 +47,26 @@ int main(){
 				}
 				else if(setup_type == "setup"){//ENTER SETUP MODE
 					while(true){// CODE FOR SETUP MODE HERE, READ COMMANDS AND PASS THEM TO THE BOARD
-									
+						
+						string setup_type;
+						cin >> setup_type;
+						
+						if(setup_type == "+"){
+							
+						}
+						else if(setup_type == "+"){
+							
+						}
+						else if(setup_type == "+"){
+							
+						}
+						else if(setup_type == "done"){
+							if(b->validSetup()){
+								break;
+							}else{
+								cout << "This is an invalid board" << endl;
+							}
+						}
 					}
 				}
 							
