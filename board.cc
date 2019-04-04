@@ -51,12 +51,7 @@ Piece* Board::atLocation(Position pos){
 
 // add a piece during setup stage
 void Board::addPieceSetup(string pieceType, Position pos){
-	// check if the setup stage has started
-	if (!hasSetup){
-		cout << "The setup stage has not started! Call startSetup method!" << endl;
-		return;
-	}
-
+	
 	bool pieceIsWhite;
 	// check if the piece is white or black
 	if (pieceType[0] <= 'Z'){
@@ -68,6 +63,7 @@ void Board::addPieceSetup(string pieceType, Position pos){
     // if there is already a piece at pos, free this owner
 	if(atLocation(pos)){
 		delete pieces[pos.getY()][pos.getX()];
+		pieces[pos.getY()][pos.getX()] = nullptr;
 	}
 
 	// contruct a new piece pointer to the position on board
@@ -92,16 +88,17 @@ void Board::addPieceSetup(string pieceType, Position pos){
 
 // remove a piece during the setup stage
 void Board::removePieceSetup(Position pos){
-	// check if the setup stage has started
-	if (!hasSetup){
-		cout << "The setup stage has not started! Call setupStart method!" << endl;
-		return;
-	}
-
 	if(atLocation(pos)){
 		delete pieces[pos.getY()][pos.getX()];
+		pieces[pos.getY()][pos.getX()] = nullptr;
 	}
 }
+
+bool Board::validSetup(){//verifies if the setup is valid before exiting setup mode
+	
+	
+}
+
 
 // setter to set the current turn
 void Board::setTurn(bool isWhite){

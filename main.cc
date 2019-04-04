@@ -46,10 +46,8 @@ int main(){
 					b->originalSetup();
 				}
 				else if(setup_type == "setup"){//ENTER SETUP MODE
-					while(){// CODE FOR SETUP MODE HERE, READ COMMANDS AND PASS THEM TO THE BOARD
-					
-					
-					
+					while(true){// CODE FOR SETUP MODE HERE, READ COMMANDS AND PASS THEM TO THE BOARD
+									
 					}
 				}
 							

@@ -28,15 +28,10 @@ class Board {
   int WIDTH;
   int HEIGHT;
 
-  bool hasPlay;
-
   int whiteScore;
   int blackScore;
-
-  bool isTextDisplay;
+  
   bool isWhiteTurn;
-
-  int level;
 
   Board(int WIDTH = 8, int HEIGHT = 8);
 
@@ -49,6 +44,9 @@ class Board {
 
   // setup stage: remove a piece at pos
   void removePieceSetup(Position pos);
+  
+  // verifies if the setup is valid
+  bool validSetup();
 
   // setup stage: which colour's turn to go next
   void setTurn(bool isWhite);
