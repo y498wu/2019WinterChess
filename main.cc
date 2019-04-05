@@ -12,6 +12,7 @@ int main(){
 		
 		if(command == "game"){
 			Board *b = new Board();
+			textDisplay display();	
 			
 			string white_player;
 			string black_player;
@@ -46,19 +47,47 @@ int main(){
 					b->originalSetup();
 				}
 				else if(setup_type == "setup"){//ENTER SETUP MODE
+					display.print(b);
 					while(true){// CODE FOR SETUP MODE HERE, READ COMMANDS AND PASS THEM TO THE BOARD
 						
 						string setup_type;
 						cin >> setup_type;
 						
 						if(setup_type == "+"){
+							string piece_type;	
+							string position;
+							cin >> piece_type;
+							cin >> position;
 							
+							int y = 8 - (int)position[1];
+							int x = position[0] - 'a';
+							
+							Position pos(x, y);							
+							
+							b->addPieceSetup(piece_type, pos);							
+							display.print(b);
 						}
-						else if(setup_type == "+"){
+						else if(setup_type == "-"){
+							string position;
+							cin >> position;
 							
+							int y = 8 - (int)position[1];
+							int x = position[0] - 'a';
+							
+							Position pos(x, y);							
+							
+							b->removePieceSetup(pos);
+							display.print(b);							
 						}
-						else if(setup_type == "+"){
+						else if(setup_type == "="){
+							string color;
+							cin >> color;
 							
+							if(color == "white"){
+								b->setTurn(true);
+							}else if(color == "black"){
+								b->setTurn(false);						
+							}							
 						}
 						else if(setup_type == "done"){
 							if(b->validSetup()){
@@ -70,7 +99,6 @@ int main(){
 					}
 				}
 							
-				textDisplay display();	
 				while(true){// first to move is white
 								
 					display.print(b);
@@ -82,7 +110,7 @@ int main(){
 						while(true){
 						
 							string read_move;
-							cin >> read_move;//read the desired input for the user
+							getline(cin, read_move);//read the desired input for the user
 						
 							//parse the input
 							Position start = 
