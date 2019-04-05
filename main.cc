@@ -18,7 +18,10 @@ int main(){
 		
 		if(command == "game"){
 			Board *b = new Board();
+			
 			TextDisplay display();	
+			Position testPos(1, 1);
+			
 			HumanPlayer* white_player_h = nullptr;	
 			HumanPlayer* black_player_h = nullptr;
 			ComputerPlayer* white_player_c = nullptr;	
@@ -124,9 +127,9 @@ int main(){
 						
 							//parse the input
 							string delimiter = " ";
-							int pos = read_move.find(delimiter)
-							string command = read_move.substr(0, pos)
-							read_move.erase(0, pos + delimiter.length())
+							size_t pos = read_move.find(delimiter);
+							string command = read_move.substr(0, pos);
+							read_move.erase(0, pos + delimiter.length());
 							
 							if(command == "resign" && black_p == "human"){
 								black_player_h->setScore(black_player_h->getScore() + 1);
@@ -138,9 +141,9 @@ int main(){
 								break;//end the game									
 							}
 							
-							pos = read_move.find(delimiter)
-							string position = read_move.substr(0, pos)
-							read_move.erase(0, pos + delimiter.length())
+							pos = read_move.find(delimiter);
+							string position = read_move.substr(0, pos);
+							read_move.erase(0, pos + delimiter.length());
 							
 							int y = 8 - (int)position[1];
 							int x = position[0] - 'a';
@@ -149,8 +152,8 @@ int main(){
 							string promote = "";
 							Position end(0, 0);
 							if((pos = read_move.find(delimiter)) != std::string::npos){//there is a pawn promotion
-								position = read_move.substr(0, pos)
-								read_move.erase(0, pos + delimiter.length())
+								position = read_move.substr(0, pos);
+								read_move.erase(0, pos + delimiter.length());
 								
 								end.setY(8 - (int)position[1]);
 								end.setY(position[0] - 'a');
@@ -236,9 +239,9 @@ int main(){
 						
 							//parse the input
 							string delimiter = " ";
-							int pos = read_move.find(delimiter)
-							string command = read_move.substr(0, pos)
-							read_move.erase(0, pos + delimiter.length())
+							size_t pos = read_move.find(delimiter);
+							string command = read_move.substr(0, pos);
+							read_move.erase(0, pos + delimiter.length());
 							
 							if(command == "resign" && white_p == "human"){
 								white_player_h->setScore(white_player_h->getScore() + 1);
@@ -250,9 +253,9 @@ int main(){
 								break;//end the game									
 							}
 							
-							pos = read_move.find(delimiter)
-							string position = read_move.substr(0, pos)
-							read_move.erase(0, pos + delimiter.length())
+							pos = read_move.find(delimiter);
+							string position = read_move.substr(0, pos);
+							read_move.erase(0, pos + delimiter.length());
 							
 							int y = 8 - (int)position[1];
 							int x = position[0] - 'a';
@@ -262,8 +265,8 @@ int main(){
 							Position end(0, 0);
 							
 							if((pos = read_move.find(delimiter)) != std::string::npos){//there is a pawn promotion
-								position = read_move.substr(0, pos)
-								read_move.erase(0, pos + delimiter.length())
+								position = read_move.substr(0, pos);
+								read_move.erase(0, pos + delimiter.length());
 								
 								end.setY(8 - (int)position[1]);
 								end.setY(position[0] - 'a');
@@ -315,7 +318,7 @@ int main(){
 						string result = black_player_c->move();	
 						
 						if(result == "white checkmate"){
-							black_player_c->.setScore(black_player_c->.getScore() + 1);
+							black_player_c->setScore(black_player_c->getScore() + 1);
 							cout << "Black wins!" << endl;
 							break;//end the game	
 						} 
@@ -337,17 +340,17 @@ int main(){
 					}		
 				} // EXITING THIS LOOP MEANS THE GAME ENDED
 			
-				cout << Current Score: << endl;
+				cout << "Current Score:" << endl;
 				if(white_p == "human"){
-					cout << White: << white_player_h->getScore() << end;
+					cout << "White:" << white_player_h->getScore() << end;
 				}else{
-					cout << White: << white_player_c->getScore() << end;
+					cout << "White:" << white_player_c->getScore() << end;
 				}
 				
 				if(black_p == "human"){
-					cout << Black: << black_player_h->getScore() << end;
+					cout << "Black:" << black_player_h->getScore() << end;
 				}else{
-					cout << Black: << black_player_c->getScore() << end;
+					cout << "Black:" << black_player_c->getScore() << end;
 				}
 		
 				string play_again;
