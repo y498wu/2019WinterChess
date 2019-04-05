@@ -1,7 +1,6 @@
 #ifndef ROOK_H
 #define ROOK_H
 
-#include "rook.cc"
 #include "pieces.h"
 #include "position.h"
 #include <vector>
@@ -11,7 +10,7 @@ class Rook: public Pieces{
 		
 	bool hasMoved;
 	
-	void helper_RemoveInvalid(vector<Position> &vec);
+	void helper_RemoveInvalid(std::vector<Position> &vec);
 	
 
 public: 

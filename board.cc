@@ -3,21 +3,7 @@
 #include <stack>
 #include <utility>
 
-#include "position.h"
-#include "pieces.h"
 #include "board.h"
-// .h that haven't been implemented
-#include "textDisplay.h"
-#include "graphicDisplay.h"
-#include "player.h"
-
-// we need the six types of pieces since we will allocate new pieces on board
-#include "king.h"
-#include "queen.h"
-#include "rook.h"
-#include "knight.h"
-#include "bishop.h"
-#include "pawn.h"
 
 using namespace std;
 
@@ -45,7 +31,7 @@ Board::~Board(){
 }
 
 // get the Piece* at pos
-Piece* Board::atLocation(Position pos){
+Pieces* Board::atLocation(Position pos){
 	return pieces[pos.getY()][pos.getX()];
 }
 

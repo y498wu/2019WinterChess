@@ -15,8 +15,7 @@ class HumanPlayer{
 	bool playerIsWhite;
 	float playerScore;
 
-public:
-	
+public:	
 
 	// constructor
 	HumanPlayer(bool playerIsWhite, Board* board);
@@ -25,6 +24,6 @@ public:
 	
 	void setScore(float i);
 	float getScore() const;
-}
+};
 
 #endif

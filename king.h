@@ -1,7 +1,6 @@
 #ifndef KING_H
 #define KING_H
 
-#include "king.cc"
 #include "pieces.h"
 #include "position.h"
 #include <vector>
@@ -9,7 +8,7 @@
 
 class King: public Pieces{
 	bool hasMoved;
-	Piece* inCheck;
+	Pieces* inCheck;
 	bool inStaleMate;
 	bool inCheckMate;
 	
@@ -19,10 +18,10 @@ public:
 	std::string checkType() const override;
 	
 	bool isInCheck() const;
-	bool isInStaleMate() const;
+	bool isInStaleMate() const;	
 	bool isInCheckMate() const;
-	void putInCheck(Piece* check);
-	Piece* returnPieceCheck() const;
+	void putInCheck(Pieces* check);
+	Pieces* returnPieceCheck() const;
 		
 	King(Board *theBoard, bool White, Position Location);
 	~King();

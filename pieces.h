@@ -1,10 +1,11 @@
 #ifndef PIECES_H
 #define PIECES_H
 
-#include "pieces.cc"
-#include "position.h"
 #include <vector>
 #include <string>
+#include "position.h"
+
+class Board;
 
 class Pieces{
 		
@@ -12,7 +13,7 @@ protected:
 	Board *theBoard;
 	bool White;
 	Position Location;
-	vector<Position> LegalMoves;
+	std::vector<Position> LegalMoves;
 	bool Protected;
 	Pieces *Pinned;
 	int availableMoveCount;
@@ -30,7 +31,7 @@ public:
 	bool isProtected() const;
 	Pieces* isPinned() const;
 	int getMoveCount() const;
-	vector<Position> getLegalMoves() const;
+	std::vector<Position> getLegalMoves() const;
 
 	//virtual methods, these need to be defined in each piece
 	virtual std::string checkType() const = 0;

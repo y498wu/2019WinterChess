@@ -1,5 +1,7 @@
 #include "rook.h"  
 
+using namespace std;
+
 Rook::~Rook(){LegalMoves.clear();}
 
 

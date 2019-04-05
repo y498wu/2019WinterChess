@@ -1,5 +1,7 @@
 #include "queen.h"  
 
+using namespace std;
+
 Queen::~Queen(){LegalMoves.clear();}
 
 

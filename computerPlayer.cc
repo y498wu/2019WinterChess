@@ -98,14 +98,12 @@ std::string ComputerPlayer::move(){
 		
 	}
 	
-	
-	
 }
 
-void setScore(float i){
+void ComputerPlayer::setScore(float i){
 	playerScore = i;
 }
 
-float getScore() const{
+float ComputerPlayer::getScore() const{
 	return playerScore;		
 }

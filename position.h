@@ -1,8 +1,6 @@
 #ifndef POSITION_H
 #define POSITION_H
 
-#include "position.cc"
-
 class Position{
 		
 	int x;

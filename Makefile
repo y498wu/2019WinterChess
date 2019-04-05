@@ -1,16 +1,15 @@
-CXX=g++
-CXXFLAGS=-std=c++14 -g -Wall -Werror=vla
-OBJECTS=bishop.o board.o computerPlayer.o humanPlayer.o king.o knight.o main.o pawn.o pieces.o position.o queen.o rook.o textDisplay.o 
-EXEC=chess
-DEPENDS=${OBJECTS:.o=.d}
+CXX = g++
+CXXFLAGS = -std=c++14 -Wall -Werror=vla -g
+EXEC = chess
+OBJECTS =  main.o position.o pieces.o bishop.o king.o knight.o pawn.o queen.o rook.o board.o textDisplay.o computerPlayer.o humanPlayer.o
+DEPENDS = ${OBJECTS:.o=.d}
 
-${EXEC}: bishop.o board.o computerPlayer.o humanPlayer.o king.o knight.o main.o pawn.o pieces.o position.o queen.o rook.o textDisplay.o 
- g++-5 -std=c++14 *.o -o chess -lX11
+${EXEC}: ${OBJECTS}
+	${CXX} ${CXXFLAGS} ${OBJECTS} -o ${EXEC}
 
--include:${DEPENDS}
+-include ${DEPENDS}
 
 .PHONY: clean
 
 clean:
- rm *.o chess
-
+	rm ${OBJECTS} ${EXEC} ${DEPENDS}

@@ -1,7 +1,6 @@
 #ifndef KNIGHT_H
 #define KNIGHT_H
 
-#include "knight.cc"
 #include "pieces.h"
 #include "position.h"
 #include <vector>

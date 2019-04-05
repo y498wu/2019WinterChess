@@ -24,6 +24,7 @@ public:
 	
 	void setScore(float i);
 	float getScore() const;
-}
+};
+
 
 #endif

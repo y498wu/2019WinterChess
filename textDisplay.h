@@ -7,7 +7,6 @@
 #include "pieces.h"
 #include "position.h"
 #include "board.h"
-#include "textDisplay.h"
 
 class TextDisplay{
 	// 2D vector of char
@@ -19,7 +18,7 @@ public:
     int HEIGHT;
 
 	// constructor
-	textDisplay();
+	TextDisplay();
 
 	// add and remove pieces
 	void print(Board *b)

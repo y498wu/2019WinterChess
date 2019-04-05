@@ -1,6 +1,12 @@
 #include <string>
 #include <iostream>
 
+#include "board.h"
+#include "textDisplay.h"
+#include "humanPlayer.h"
+#include "computerPlayer.h"
+#include "position.h"
+
 using namespace std;
 
 int main(){
@@ -12,28 +18,31 @@ int main(){
 		
 		if(command == "game"){
 			Board *b = new Board();
-			textDisplay display();	
+			TextDisplay display();	
+			Position test(1, 3);
 			
 			string white_player;
 			string black_player;
 			
 			cin >> white_player;
 			cin >> black_player;
-						
+			
+				
+			
 			if(white_player == "human"){
-				Human white_p = new Human(true, b);
+				HumanPlayer white_p = new HumanPlayer(true, b);
 			}
 			else if(white_player == "computer[1]"){
-				white_player == "computer"
-				Computer white_p = new Computer(true, b, 1);
+				white_player == "computer";
+				ComputerPlayer white_p = new ComputerPlayer(true, b, 1);
 			}
 					
-			if(black_player == human){
-				Human black_p = new Human(false, b);
+			if(black_player == "human"){
+				HumanPlayer black_p = new HumanPlayer(false, b);
 			}
 			else if(black_player == "computer[1]"){
-				black_player == "computer"
-				Computer black_p = new Computer(false, b, 1);
+				black_player == "computer";
+				ComputerPlayer black_p = new ComputerPlayer(false, b, 1);
 			}
 		
 			//start the game

@@ -9,10 +9,15 @@
 #include "position.h"
 #include "pieces.h"
 #include "textDisplay.h"
-#include "player.h"
+#include "king.h"
+#include "queen.h"
+#include "rook.h"
+#include "knight.h"
+#include "bishop.h"
+#include "pawn.h"
 
 class Board {
-  std::vector<std::vector<Piece*>> pieces;
+  std::vector<std::vector<Pieces*>> pieces;
   //so the reason we need triple pointers is because Piece is an abstract class so we can't make any 
   //piece objects however we can create piece pointers so basically the board is a a board of piece pointers.
   //and these piece pointers can point to any of the possible pieces, which is why the board dosen't need to
@@ -33,10 +38,8 @@ class Board {
   
   bool isWhiteTurn;
 
-  Board(int WIDTH = 8, int HEIGHT = 8);
-
   // Get the piece pointer at pos
-  Piece* atLocation(Position pos);
+  Pieces* atLocation(Position pos);
 
   // setup stage: add a piece at pos 
   // The board will automatically remove the piece on pos when it's adding a new piece there

@@ -9,8 +9,7 @@
 using namespace std;
 
 // constructor
-textDisplay::textDisplay() : WIDTH{8}, HEIGHT{8} 
-{
+TextDisplay::TextDisplay() : WIDTH{8}, HEIGHT{8}{
 	for(int i = 0; i < HEIGHT; i++){
 		for(int j = 0; j < WIDTH; j++){
 			if ((i - j) % 2 == 0){
@@ -23,7 +22,7 @@ textDisplay::textDisplay() : WIDTH{8}, HEIGHT{8}
 	}
 }
 
-void textDisplay::print(Board *b){
+void TextDisplay::print(Board *b){
 	for(int i = 0; i < HEIGHT; i++){
 		cout << 8-i << ' ';
 		for(int j = 0; j < WIDTH; j++){

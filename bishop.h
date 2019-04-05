@@ -1,7 +1,6 @@
 #ifndef BISHOP_H
 #define BISHOP_H
 
-#include "bishop.cc"
 #include "pieces.h"
 #include "position.h"
 #include <vector>
@@ -9,7 +8,7 @@
 
 class Bishop: public Pieces{
 		
-	void helper_RemoveInvalid(vector<Position> &vec);
+	void helper_RemoveInvalid(std::vector<Position> &vec);
 	
 public: 
 	

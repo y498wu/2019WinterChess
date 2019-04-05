@@ -1,7 +1,6 @@
 #ifndef PAWN_H
 #define PAWN_H
 
-#include "pawn.cc"
 #include "pieces.h"
 #include "position.h"
 #include <vector>
