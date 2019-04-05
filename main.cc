@@ -19,30 +19,31 @@ int main(){
 		if(command == "game"){
 			Board *b = new Board();
 			TextDisplay display();	
-			Position test(1, 3);
+			HumanPlayer* white_player_h = nullptr;	
+			HumanPlayer* black_player_h = nullptr;
+			ComputerPlayer* white_player_c = nullptr;	
+			ComputerPlayer* black_player_c = nullptr;
 			
-			string white_player;
-			string black_player;
+			string white_p;
+			string black_p;
 			
-			cin >> white_player;
-			cin >> black_player;
-			
-				
-			
-			if(white_player == "human"){
-				HumanPlayer white_p = new HumanPlayer(true, b);
+			cin >> white_p;
+			cin >> black_p;
+						
+			if(white_p == "human"){
+				white_player_h = new HumanPlayer(true, b);
 			}
-			else if(white_player == "computer[1]"){
-				white_player == "computer";
-				ComputerPlayer white_p = new ComputerPlayer(true, b, 1);
+			else if(white_p == "computer[1]"){
+				white_p == "computer";
+				white_player_c = new ComputerPlayer(true, b, 1);
 			}
 					
-			if(black_player == "human"){
-				HumanPlayer black_p = new HumanPlayer(false, b);
+			if(black_p == "human"){
+				black_player_h = new HumanPlayer(false, b);
 			}
-			else if(black_player == "computer[1]"){
-				black_player == "computer";
-				ComputerPlayer black_p = new ComputerPlayer(false, b, 1);
+			else if(black_p == "computer[1]"){
+				black_p == "computer";
+				black_player_c = new ComputerPlayer(false, b, 1);
 			}
 		
 			//start the game
@@ -113,7 +114,7 @@ int main(){
 					display.print(b);
 					b->setTurn(true);
 					
-					if(white_player == "human"){//if the white player is a human
+					if(white_p == "human"){//if the white player is a human
 						string result;
 						
 						while(true){
@@ -127,10 +128,14 @@ int main(){
 							string command = read_move.substr(0, pos)
 							read_move.erase(0, pos + delimiter.length())
 							
-							if(command = "resign"){
-								black_player.setScore(black_player.getScore() + 1);
+							if(command == "resign" && black_p == "human"){
+								black_player_h->setScore(black_player_h->getScore() + 1);
 								cout << "Black wins!" << endl;
 								break;//end the game			
+							}else if(command == "resign" && black_p == "computer"){
+								black_player_c->setScore(black_player_c->getScore() + 1);
+								cout << "Black wins!" << endl;
+								break;//end the game									
 							}
 							
 							pos = read_move.find(delimiter)
@@ -156,7 +161,7 @@ int main(){
 							}
 																					
 							//try to make the move, see what the makeMove function returns
-							result = white_player.makeMove(start, end, promote);
+							result = white_player_h->makeMove(start, end, promote);
 						
 							if(result == "invalid input"){
 								cout << "This position is out of bound, try again:" << endl;
@@ -174,13 +179,18 @@ int main(){
 						}
 						
 						if(result == "black checkmate"){
-							white_player.setScore(white_player.getScore() + 1);
+							white_player_h->setScore(white_player_h->getScore() + 1);
 							cout << "White wins!" << endl;
 							break;//end the game
 						} 
-						else if(result == "stalemate"){
-							white_player.setScore(white_player.getScore() + 0.5);
-							black_player.setScore(black_player.getScore() + 0.5);
+						else if(result == "stalemate" && black_p == "human"){
+							white_player_h->setScore(white_player_h->getScore() + 0.5);
+							black_player_h->setScore(black_player_h->getScore() + 0.5);
+							cout << "Stalemate!" << endl;
+							break;//end the game			
+						}else if(result == "stalemate" && black_p == "computer"){
+							white_player_h->setScore(white_player_h->getScore() + 0.5);
+							black_player_c->setScore(black_player_c->getScore() + 0.5);
 							cout << "Stalemate!" << endl;
 							break;//end the game			
 						}
@@ -188,18 +198,23 @@ int main(){
 							cout << "Sucessful move! Black turn next:" << endl;
 						}
 												
-					}else if(white_player == "computer"){
+					}else if(white_p == "computer"){
 						
-						string result = white_player.move();	
+						string result = white_player_c->move();	
 						
 						if(result == "black checkmate"){
-							white_player.setScore(white_player.getScore() + 1);
+							white_player_c->setScore(white_player_c->getScore() + 1);
 							cout << "White wins!" << endl;
 							break;//end the game	
 						} 
-						else if(result == "stalemate"){
-							white_player.setScore(white_player.getScore() + 0.5);
-							black_player.setScore(black_player.getScore() + 0.5);
+						else if(result == "stalemate" && black_p == "human"){
+							white_player_c->setScore(white_player_c->getScore() + 0.5);
+							black_player_h->setScore(black_player_h->getScore() + 0.5);
+							cout << "Stalemate!" << endl;
+							break;//end the game					
+						}else if(result == "stalemate" && black_p == "computer"){
+							white_player_c->setScore(white_player_c->getScore() + 0.5);
+							black_player_c->setScore(black_player_c->getScore() + 0.5);
 							cout << "Stalemate!" << endl;
 							break;//end the game					
 						}
@@ -211,7 +226,7 @@ int main(){
 					display.print(b);
 					b->setTurn(false);
 					
-					if(black_player == "human"){//if the black player is a human
+					if(black_p == "human"){//if the black player is a human
 						string result;
 						
 						while(true){
@@ -225,10 +240,14 @@ int main(){
 							string command = read_move.substr(0, pos)
 							read_move.erase(0, pos + delimiter.length())
 							
-							if(command = "resign"){
-								black_player.setScore(black_player.getScore() + 1);
-								cout << "Black wins!" << endl;
+							if(command == "resign" && white_p == "human"){
+								white_player_h->setScore(white_player_h->getScore() + 1);
+								cout << "White wins!" << endl;
 								break;//end the game			
+							}else if(command == "resign" && white_p == "computer"){
+								white_player_c->setScore(white_player_c->getScore() + 1);
+								cout << "White wins!" << endl;
+								break;//end the game									
 							}
 							
 							pos = read_move.find(delimiter)
@@ -254,7 +273,7 @@ int main(){
 								end.setY(read_move[0] - 'a');
 							}
 							
-							result = black_player.makeMove(start, end, promote);
+							result = black_player_h->makeMove(start, end, promote);
 						
 							if(result == "invalid input"){
 								cout << "This position is out of bound, try again:" << endl;
@@ -272,45 +291,65 @@ int main(){
 						}
 						
 						if(result == "white checkmate"){
-							black_player.setScore(black_player.getScore() + 1);
+							black_player_h->setScore(black_player_h->getScore() + 1);
 							cout << "Black wins!" << endl;
 							break;//end the game	
 						} 
-						else if(result == "stalemate"){
-							black_player.setScore(black_player.getScore() + 0.5);
-							white_player.setScore(white_player.getScore() + 0.5);
+						else if(result == "stalemate" && white_p == "human"){
+							black_player_h->setScore(black_player_h->getScore() + 0.5);
+							white_player_h->setScore(white_player_h->getScore() + 0.5);
 							cout << "Stalemate!" << endl;
-							break;//end the game						
+							break;//end the game			
+						}else if(result == "stalemate" && white_p == "computer"){
+							black_player_h->setScore(black_player_h->getScore() + 0.5);
+							white_player_c->setScore(white_player_c->getScore() + 0.5);
+							cout << "Stalemate!" << endl;
+							break;//end the game			
 						}
 						else if(result == "sucessful move"){
 							cout << "Sucessful move! White turn next:" << endl;
 						}
 						
-					}else if(black_player == "computer"){
+					}else if(black_p == "computer"){
 						
-						string result = black_player.move();	
+						string result = black_player_c->move();	
 						
 						if(result == "white checkmate"){
-							black_player.setScore(black_player.getScore() + 1);
+							black_player_c->.setScore(black_player_c->.getScore() + 1);
 							cout << "Black wins!" << endl;
 							break;//end the game	
 						} 
-						else if(result == "stalemate"){
-							black_player.setScore(black_player.getScore() + 0.5);
-							white_player.setScore(white_player.getScore() + 0.5);
+						else if(result == "stalemate" && white_p == "human"){
+							black_player_c->setScore(black_player_c->getScore() + 0.5);
+							white_player_h->setScore(white_player_h->getScore() + 0.5);
 							cout << "Stalemate!" << endl;
-							break;//end the game						
+							break;//end the game					
+						}
+						else if(result == "stalemate" && white_p == "computer"){
+							black_player_c->setScore(black_player_c->getScore() + 0.5);
+							white_player_c->setScore(white_player_c->getScore() + 0.5);
+							cout << "Stalemate!" << endl;
+							break;//end the game					
 						}
 						else if(result == "sucessful move"){
 							cout << "Sucessful move! White turn next:" << endl;
-						}
+						}						
 					}		
 				} // EXITING THIS LOOP MEANS THE GAME ENDED
 			
 				cout << Current Score: << endl;
-				cout << White: << white_player.getScore() << end;
-				cout << Black: << black_player.getScore() << end;
+				if(white_p == "human"){
+					cout << White: << white_player_h->getScore() << end;
+				}else{
+					cout << White: << white_player_c->getScore() << end;
+				}
 				
+				if(black_p == "human"){
+					cout << Black: << black_player_h->getScore() << end;
+				}else{
+					cout << Black: << black_player_c->getScore() << end;
+				}
+		
 				string play_again;
 				
 				cout << "Play another round?" << endl;
