@@ -33,6 +33,13 @@ void King::putInCheck(Piece* check){
 	this->inCheck = check;
 }
 
+
+Piece* King::returnPieceCheck() const{
+	
+	return this->inCheck;	
+}
+
+
 void King::updateMoves(){
 	
 	vector<Position> possibleMoves;

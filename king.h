@@ -22,6 +22,7 @@ public:
 	bool isInStaleMate() const;
 	bool isInCheckMate() const;
 	void putInCheck(Piece* check);
+	Piece* returnPieceCheck() const;
 		
 	King(Board *theBoard, bool White, Position Location);
 	~King();

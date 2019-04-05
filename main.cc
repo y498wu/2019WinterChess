@@ -113,10 +113,39 @@ int main(){
 							getline(cin, read_move);//read the desired input for the user
 						
 							//parse the input
-							Position start = 
-							Position end =
-							string promote =
+							string delimiter = " ";
+							int pos = read_move.find(delimiter)
+							string command = read_move.substr(0, pos)
+							read_move.erase(0, pos + delimiter.length())
 							
+							if(command = "resign"){
+								black_player.setScore(black_player.getScore() + 1);
+								cout << "Black wins!" << endl;
+								break;//end the game			
+							}
+							
+							pos = read_move.find(delimiter)
+							string position = read_move.substr(0, pos)
+							read_move.erase(0, pos + delimiter.length())
+							
+							int y = 8 - (int)position[1];
+							int x = position[0] - 'a';
+							
+							Position start(x, y);		
+							string promote = "";
+							Position end(0, 0);
+							if((pos = read_move.find(delimiter)) != std::string::npos){//there is a pawn promotion
+								position = read_move.substr(0, pos)
+								read_move.erase(0, pos + delimiter.length())
+								
+								end.setY(8 - (int)position[1]);
+								end.setY(position[0] - 'a');
+								promote = read_move;								
+							}else{
+								end.setY(8 - (int)read_move[1]);
+								end.setY(read_move[0] - 'a');
+							}
+																					
 							//try to make the move, see what the makeMove function returns
 							result = white_player.makeMove(start, end, promote);
 						
@@ -179,12 +208,42 @@ int main(){
 						while(true){
 						
 							string read_move;
-							cin >> read_move;
+							getline(cin, read_move);//read the desired input for the user
 						
 							//parse the input
-							Position start = 
-							Position end =
-							string promote =
+							string delimiter = " ";
+							int pos = read_move.find(delimiter)
+							string command = read_move.substr(0, pos)
+							read_move.erase(0, pos + delimiter.length())
+							
+							if(command = "resign"){
+								black_player.setScore(black_player.getScore() + 1);
+								cout << "Black wins!" << endl;
+								break;//end the game			
+							}
+							
+							pos = read_move.find(delimiter)
+							string position = read_move.substr(0, pos)
+							read_move.erase(0, pos + delimiter.length())
+							
+							int y = 8 - (int)position[1];
+							int x = position[0] - 'a';
+							
+							Position start(x, y);		
+							string promote = "";
+							Position end(0, 0);
+							
+							if((pos = read_move.find(delimiter)) != std::string::npos){//there is a pawn promotion
+								position = read_move.substr(0, pos)
+								read_move.erase(0, pos + delimiter.length())
+								
+								end.setY(8 - (int)position[1]);
+								end.setY(position[0] - 'a');
+								promote = read_move;								
+							}else{//no pawn promotion
+								end.setY(8 - (int)read_move[1]);
+								end.setY(read_move[0] - 'a');
+							}
 							
 							result = black_player.makeMove(start, end, promote);
 						
@@ -250,8 +309,10 @@ int main(){
 				
 				if(play_again == "no" || play_again == "n"){
 					break;
-				}				
+				}
 			}
+			
+			delete b;
 		}
 		else{
 			cout << "invalid command" << endl;

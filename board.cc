@@ -97,6 +97,8 @@ void Board::removePieceSetup(Position pos){
 bool Board::validSetup(){//verifies if the setup is valid before exiting setup mode
 	int whiteKingNum = 0;
 	int blackKingNum = 0;
+	this->updateBoard();
+	
 	for(int i = 0; i < WIDTH; ++i){
 		for(int j = 0; j < HEIGHT; ++j){
 			if (pieces[i][j]->checkType() == "K"){
