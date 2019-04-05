@@ -106,22 +106,24 @@ bool Board::validSetup(){//verifies if the setup is valid before exiting setup m
 			} else if ((pieces[i][j]->checkType() == "P" || pieces[i][j]->checkType() == "p")
 				&& (i == 0 || i == HEIGHT-1)){
 				cout << "There is a pawn on the first or lat row! Can't leave setup mode!" << endl;
-				return;
+				return false;
 			}
 		}
 	}
 	if(whiteKingNum != 1){
 		cout << "The board doesn't contain exactly one white king! Can't leave setup mode!" << endl;
-		return;
+		return false;
 	} else if (blackKingNum != 1){
 		cout << "The board doesn't contain exactly one black king! Can't leave setup mode!" << endl;
-		return;
+		return false;
 	} else if (whiteKing->isInCheck()){
 		cout << "The white king is in check! Can't leave setup mode!" << endl;
-		return;
+		return false;
 	} else if (blackKing->isInCheck()){
 		cout << "The black king is in check! Can't leave setup mode!" << endl;
-		return;
+		return false;
+	} else {
+		return true;
 	}
 }
 
