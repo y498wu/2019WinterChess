@@ -95,8 +95,34 @@ void Board::removePieceSetup(Position pos){
 }
 
 bool Board::validSetup(){//verifies if the setup is valid before exiting setup mode
-	
-	
+	int whiteKingNum = 0;
+	int blackKingNum = 0;
+	for(int i = 0; i < WIDTH; ++i){
+		for(int j = 0; j < HEIGHT; ++j){
+			if (pieces[i][j]->checkType() == "K"){
+				++whiteKingNum;
+			} else if (pieces[i][j]->checkType() == "k"){
+				++blackKingNum;
+			} else if ((pieces[i][j]->checkType() == "P" || pieces[i][j]->checkType() == "p")
+				&& (i == 0 || i == HEIGHT-1)){
+				cout << "There is a pawn on the first or lat row! Can't leave setup mode!" << endl;
+				return;
+			}
+		}
+	}
+	if(whiteKingNum != 1){
+		cout << "The board doesn't contain exactly one white king! Can't leave setup mode!" << endl;
+		return;
+	} else if (blackKingNum != 1){
+		cout << "The board doesn't contain exactly one black king! Can't leave setup mode!" << endl;
+		return;
+	} else if (whiteKing->isInCheck()){
+		cout << "The white king is in check! Can't leave setup mode!" << endl;
+		return;
+	} else if (blackKing->isInCheck()){
+		cout << "The black king is in check! Can't leave setup mode!" << endl;
+		return;
+	}
 }
 
 
