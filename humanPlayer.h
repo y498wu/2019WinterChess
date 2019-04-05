@@ -1,4 +1,4 @@
-#ifdef HUMANPLAYER_H
+#ifndef HUMANPLAYER_H
 #define HUMANPLAYER_H
 
 #include <vector>

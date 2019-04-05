@@ -1,4 +1,4 @@
-#ifdef COMPUTERPLAYER_H
+#ifndef COMPUTERPLAYER_H
 #define COMPUTERPLAYER_H
 
 #include <vector>

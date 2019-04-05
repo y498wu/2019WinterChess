@@ -1,9 +1,6 @@
 #include <vector>
 #include <iostream>
 
-#include "pieces.h"
-#include "position.h"
-#include "board.h"
 #include "textDisplay.h"
 
 using namespace std;

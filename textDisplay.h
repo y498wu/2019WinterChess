@@ -1,4 +1,4 @@
-#ifdef TEXTDISPLAY_H
+#ifndef TEXTDISPLAY_H
 #define TEXTDISPLAY_H
 
 #include <vector>
