@@ -72,7 +72,7 @@ int main(){
 							cin >> piece_type;
 							cin >> position;
 							
-							int y = 8 - (int)position[1];
+							int y = 8 - (position[1] - '0');
 							int x = position[0] - 'a';
 							
 							Position pos(x, y);							
@@ -84,7 +84,7 @@ int main(){
 							string position;
 							cin >> position;
 							
-							int y = 8 - (int)position[1];
+							int y = 8 - (position[1] - '0');
 							int x = position[0] - 'a';
 							
 							Position pos(x, y);							
@@ -146,7 +146,7 @@ int main(){
 							string position = read_move.substr(0, pos);
 							read_move.erase(0, pos + delimiter.length());
 							
-							int y = 8 - (int)position[1];
+							int y = 8 - (position[1] - '0');
 							int x = position[0] - 'a';
 							
 							Position start(x, y);		
@@ -156,19 +156,20 @@ int main(){
 								position = read_move.substr(0, pos);
 								read_move.erase(0, pos + delimiter.length());
 								
-								end.setY(8 - (int)position[1]);
-								end.setY(position[0] - 'a');
+								end.setY(8 - (position[1] - '0'));
+								end.setX(position[0] - 'a');
 								promote = read_move;								
 							}else{
-								end.setY(8 - (int)read_move[1]);
-								end.setY(read_move[0] - 'a');
+								end.setY(8 - (read_move[1] - '0'));
+								end.setX(read_move[0] - 'a');
 							}
-							cout << "start:" << start.getX() << ", " << start.getX() << endl;
-							cout << "end:" << start.getY() << ", " << start.getY() << endl;
 							
 							//try to make the move, see what the makeMove function returns
 							result = white_player_h->makeMove(start, end, promote);
-						
+							
+							cout << "start:" << start.getX() << ", " << start.getY() << endl;
+							cout << "end:" << end.getX() << ", " << end.getY() << endl;
+							
 							if(result == "invalid input"){
 								cout << "This position is out of bound, try again:" << endl;
 							}else if(result == "no piece"){

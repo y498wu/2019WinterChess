@@ -57,6 +57,32 @@ Pieces* Board::atLocation(Position pos){
 	return pieces[pos.getY()][pos.getX()];
 }
 
+void Board::updateBoard(){
+	// go through all the Piece* to reset the protected&pinned status
+	cout << "1." << endl;
+	for(int y = 0; y <= 7; ++y){
+		for(int x = 0; x <= 7; ++x){
+			Pieces* temp = pieces[y][x];
+			if(temp != nullptr){
+				temp->resetProtectedPinned();
+			}
+		}	
+	}cout << "2." << endl;
+	// go through all the Piece* to update their legalMoves
+	for(int y = 0; y <= 7; ++y){
+		for(int x = 0; x <= 7; ++x){
+			Pieces* temp = pieces[y][x];
+			if(temp != nullptr){
+				cout << x << ", " << y << endl;
+				cout << "type:" << temp->checkType() << endl;
+				temp->updateMoves();
+			}
+		}	
+	}cout << "3." << endl;
+	whiteKing->updateMoves();
+	blackKing->updateMoves();
+}
+
 // add a piece during setup stage
 void Board::addPieceSetup(string pieceType, Position pos){
 	
@@ -180,25 +206,8 @@ void Board::originalSetup(){
 	pieces[7][5] = new Bishop(this, true, Position(5, 7));
 	pieces[7][6] = new Knight(this, true, Position(6, 7));
 	pieces[7][7] = new Rook(this, true, Position(7, 7));
-}
-
-void Board::updateBoard(){
-	// go through all the Piece* to reset the protected&pinned status
-	for(int y = 0; y <= 7; y++){
-		for(int x = 0; x <= 7; x++){
-			Pieces* temp = pieces[y][x];
-			temp->resetProtectedPinned();
-		}	
-	}
-	// go through all the Piece* to update their legalMoves
-	for(int y = 0; y <= 7; y++){
-		for(int x = 0; x <= 7; x++){
-			Pieces* temp = pieces[y][x];
-			temp->updateMoves();
-		}	
-	}
-	whiteKing->updateMoves();
-	blackKing->updateMoves();
+	
+	this->updateBoard();
 }
 
 // makeMove method needs to consider other cases
@@ -219,7 +228,7 @@ std::string Board::makeMove(Position start, Position end, string pieceType){
 		return "wrong color";
 	}
 	// check if the move is valid
-	if(!atLocation(start)->canMove(end)){
+	if(atLocation(start)->canMove(end) == false){
 		return "not legal";
 	}
 	// check if this colour's king is in check
@@ -229,6 +238,7 @@ std::string Board::makeMove(Position start, Position end, string pieceType){
 	} else {
 		currentKing = blackKing;
 	}
+	
 	// if currentKing is in check, make the move first
 	// and then check if this move enable the currentKing to escape from check
 	Pieces* temp = nullptr;
@@ -258,7 +268,7 @@ std::string Board::makeMove(Position start, Position end, string pieceType){
 		pieces[end.getY()][end.getX()] = nullptr;
 		pieces[end.getY()][end.getX()] = pieces[start.getY()][start.getX()];
 		pieces[start.getY()][start.getX()] = nullptr;
-		updateBoard();
+		this->updateBoard();
 	}
 	// After the move, we check if the pawn needs promotion
 	// if atLocation(end) is a white pawn and it's white's turn and the pieceType is white
@@ -275,7 +285,7 @@ std::string Board::makeMove(Position start, Position end, string pieceType){
 		} else if (pieceType == "B" || pieceType == "b"){
 			pieces[end.getY()][end.getX()] = new Bishop(this, pieceIsWhite, end);
 		}
-	}
+	}cout << "here3" << endl;
 	// check if the enemy colour's king is in checkmate
 	// This one need more implementations......
 	// such as draw state, restart te setup, display the board
