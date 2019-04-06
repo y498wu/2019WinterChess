@@ -36,6 +36,7 @@ public:
 	//virtual methods, these need to be defined in each piece
 	virtual std::string checkType() const = 0;
 	virtual void updateMoves() = 0;	
+	Pieces(Board *theBoard, bool White, Position Location);
 	virtual ~Pieces();
  
 };

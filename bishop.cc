@@ -1,22 +1,17 @@
 #include "bishop.h"  
+#include "board.h"
 
 using namespace std;
 
 Bishop::~Bishop(){LegalMoves.clear();}
 
-
-Bishop::Bishop(Board *theBoard, bool White, Position Location): theBoard{theBoard},
-															White{White},
-															Location{Location},
-															Protected{false},
-															Pinned{nullptr}{}
+Bishop::Bishop(Board *theBoard, bool White, Position Location): Pieces(theBoard, White, Location){}
 
 std::string Bishop::checkType() const{
 	return this->White ? "B" : "b";
 }
 
-
-void Bishop::helper_RemoveInvalid(vector<Position> &vec){
+void Bishop::helper_RemoveInvalid(vector<Position> &vec, Pieces* &isPin){
 	
 	int size = vec.size();
 	
@@ -32,16 +27,16 @@ void Bishop::helper_RemoveInvalid(vector<Position> &vec){
 			}
 			else{ //this means that it is an enemy piece, can move to its position, check for pinning
 			
-				if(temp->checkType() = "K" || temp->checkType() = "k"){
+				if(temp->checkType() == "K" || temp->checkType() == "k"){
 					King* tempKing = dynamic_cast<King*>(temp);
 					tempKing->putInCheck(this);
 				}else{
 				for(int j = i+1; j < size; j++){//check if the king is the next piece behind temp
-					Pieces* isKing = this->theBoard.atLocation(vec.at(j));
+					Pieces* isKing = this->theBoard->atLocation(vec.at(j));
 					
 					//if the first piece behind temp is the enemy king
 					if(isKing != nullptr ){
-						if((isKing->checkType() == "k" && this->White) || isKing->checkType() == "K" && this->White == false){
+						if((isKing->checkType() == "k" && this->White) || (isKing->checkType() == "K" && this->White == false)){
 							if(temp->isPinned() == nullptr){
 								temp->setPinned(this);
 								isPin = temp;
@@ -81,7 +76,7 @@ void Bishop::updateMoves(){
 			break;
 		}
 		
-		leftUpMoves.emplace_back(new Position(x, y));
+		leftUpMoves.emplace_back(Position(x, y));
 	}
 	
 	y = this->Location.getY();
@@ -93,7 +88,7 @@ void Bishop::updateMoves(){
 			break;
 		}
 		
-		rightUpMoves.emplace_back(new Position(x, y));
+		rightUpMoves.emplace_back(Position(x, y));
 	}
 	
 	y = this->Location.getY();
@@ -105,7 +100,7 @@ void Bishop::updateMoves(){
 			break;
 		}
 		
-		leftDownMoves.emplace_back(new Position(x, y));
+		leftDownMoves.emplace_back(Position(x, y));
 	}
 	
 	y = this->Location.getY();
@@ -117,15 +112,15 @@ void Bishop::updateMoves(){
 			break;
 		}
 		
-		rightDownMoves.emplace_back(new Position(x, y));
+		rightDownMoves.emplace_back(Position(x, y));
 	}
 	
 	//step 2: check if there are pieces occupying any of the possible locations
 	
-	helper_RemoveInvalid(leftUpMoves);
-	helper_RemoveInvalid(rightUpMoves);
-	helper_RemoveInvalid(leftDownMoves);
-	helper_RemoveInvalid(rightDownMoves);
+	helper_RemoveInvalid(leftUpMoves, isPin);
+	helper_RemoveInvalid(rightUpMoves, isPin);
+	helper_RemoveInvalid(leftDownMoves, isPin);
+	helper_RemoveInvalid(rightDownMoves, isPin);
 	
 	// step 3: check for pinning
 	

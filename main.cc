@@ -15,12 +15,12 @@ int main(){
 		
 		string command;
 		cin >> command;
-		
+				
 		if(command == "game"){
-			Board *b = new Board();
 			
-			TextDisplay display();	
-			Position testPos(1, 1);
+			Board *b = new Board();
+						
+			TextDisplay display;
 			
 			HumanPlayer* white_player_h = nullptr;	
 			HumanPlayer* black_player_h = nullptr;
@@ -50,7 +50,7 @@ int main(){
 			}
 		
 			//start the game
-			
+			cout << "game started enter setup type" << endl;
 			while(true){
 			
 				string setup_type;
@@ -113,7 +113,7 @@ int main(){
 				}
 							
 				while(true){// first to move is white
-								
+		
 					display.print(b);
 					b->setTurn(true);
 					
@@ -121,10 +121,11 @@ int main(){
 						string result;
 						
 						while(true){
-						
+							
 							string read_move;
+							cin.ignore();
 							getline(cin, read_move);//read the desired input for the user
-						
+							
 							//parse the input
 							string delimiter = " ";
 							size_t pos = read_move.find(delimiter);
@@ -162,7 +163,9 @@ int main(){
 								end.setY(8 - (int)read_move[1]);
 								end.setY(read_move[0] - 'a');
 							}
-																					
+							cout << "start:" << start.getX() << ", " << start.getX() << endl;
+							cout << "end:" << start.getY() << ", " << start.getY() << endl;
+							
 							//try to make the move, see what the makeMove function returns
 							result = white_player_h->makeMove(start, end, promote);
 						
@@ -235,6 +238,7 @@ int main(){
 						while(true){
 						
 							string read_move;
+							cin.ignore();
 							getline(cin, read_move);//read the desired input for the user
 						
 							//parse the input
@@ -339,19 +343,25 @@ int main(){
 						}						
 					}		
 				} // EXITING THIS LOOP MEANS THE GAME ENDED
-			
-				cout << "Current Score:" << endl;
+				
+				float white_score;
+				float black_score;
+				
 				if(white_p == "human"){
-					cout << "White:" << white_player_h->getScore() << end;
+					white_score = white_player_h->getScore();
 				}else{
-					cout << "White:" << white_player_c->getScore() << end;
+					white_score = white_player_c->getScore();
 				}
 				
 				if(black_p == "human"){
-					cout << "Black:" << black_player_h->getScore() << end;
+					black_score = black_player_h->getScore();
 				}else{
-					cout << "Black:" << black_player_c->getScore() << end;
+					black_score = black_player_c->getScore();
 				}
+				
+				cout << "Current Score:" << endl;
+				cout << "White:" << white_score << endl;
+				cout << "Black:" << black_score << endl;
 		
 				string play_again;
 				

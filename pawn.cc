@@ -1,14 +1,11 @@
 #include "pawn.h"  
+#include "board.h"
+
+using namespace std;
 
 Pawn::~Pawn(){LegalMoves.clear();}
 
-
-Pawn::Pawn(Board *theBoard, bool White, Position Location): theBoard{theBoard},
-															White{White},
-															Location{Location},
-															Protected{false},
-															Pinned{nullptr},
-															hasMoved{false}{}
+Pawn::Pawn(Board *theBoard, bool White, Position Location): Pieces(theBoard, White, Location), hasMoved{false}{}
 
 std::string Pawn::checkType() const{
 	return this->White ? "P" : "p";
@@ -27,14 +24,14 @@ void Pawn::updateMoves(){
 		int y = this->Location.getY() - 1;
 		
 		if(x >= 0 && x <= 7 && y >= 0 && y <= 7){
-			possibleForwardMoves.emplace_back(new Position(x, y));
+			possibleForwardMoves.emplace_back(Position(x, y));
 		}
 		
 		if(this->hasMoved == false){
 			y = this->Location.getY() - 2;
 			
 			if(x >= 0 && x <= 7 && y >= 0 && y <= 7){
-				possibleForwardMoves.emplace_back(new Position(x, y));
+				possibleForwardMoves.emplace_back(Position(x, y));
 			}
 		}
 		
@@ -42,14 +39,14 @@ void Pawn::updateMoves(){
 		x = this->Location.getX() - 1;
 		
 		if(x >= 0 && x <= 7 && y >= 0 && y <= 7){
-			possibleAttackMoves.emplace_back(new Position(x, y);
+			possibleAttackMoves.emplace_back(Position(x, y));
 		}
 		
 		y = this->Location.getY() - 1;
 		x = this->Location.getX() + 1;
 		
 		if(x >= 0 && x <= 7 && y >= 0 && y <= 7){
-			possibleAttackMoves.emplace_back(new Position(x, y);
+			possibleAttackMoves.emplace_back(Position(x, y));
 		}
 	}
 	else{
@@ -58,7 +55,7 @@ void Pawn::updateMoves(){
 		int y = this->Location.getY() + 1;
 	
 		if(x >= 0 && x <= 7 && y >= 0 && y <= 7){
-			possibleForwardMoves.emplace_back(new Position(x, y));
+			possibleForwardMoves.emplace_back(Position(x, y));
 		}
 		
 		if(this->hasMoved == false){
@@ -66,7 +63,7 @@ void Pawn::updateMoves(){
 			y = this->Location.getY() + 2;
 			
 			if(x >= 0 && x <= 7 && y >= 0 && y <= 7){
-				possibleForwardMoves.emplace_back(new Position(x, y));
+				possibleForwardMoves.emplace_back(Position(x, y));
 			}
 		}
 		
@@ -74,14 +71,14 @@ void Pawn::updateMoves(){
 		x = this->Location.getX() - 1;
 		
 		if(x >= 0 && x <= 7 && y >= 0 && y <= 7){
-			possibleAttackMoves.emplace_back(new Position(x, y);
+			possibleAttackMoves.emplace_back(Position(x, y));
 		}
 		
 		y = this->Location.getY() + 1;
 		x = this->Location.getX() + 1;
 		
 		if(x >= 0 && x <= 7 && y >= 0 && y <= 7){
-			possibleAttackMoves.emplace_back(new Position(x, y);
+			possibleAttackMoves.emplace_back(Position(x, y));
 		}
 		
 	}
@@ -108,18 +105,18 @@ void Pawn::updateMoves(){
 		
 		if(temp == nullptr){
 			possibleAttackMoves.erase(possibleAttackMoves.begin() + i);
-			size = possibleMoves.size();
+			size = possibleAttackMoves.size();
 			i--;
 		}		
 		else{//if there is a piece at the possible location
 			if((this->White && temp->isWhite()) || (this->White == false && temp->isWhite() == false)){
 				temp->setProtected(true);			
 				possibleAttackMoves.erase(possibleAttackMoves.begin() + i);
-				size = possibleMoves.size();
+				size = possibleAttackMoves.size();
 				i--;
 				
 			}
-			else if(temp->checkType() = "K" || temp->checkType() = "k"){
+			else if((temp->checkType() == "K") || (temp->checkType() == "k")){
 				King* tempKing = dynamic_cast<King*>(temp);
 				tempKing->putInCheck(this);
 			}
@@ -130,7 +127,29 @@ void Pawn::updateMoves(){
 	// step 3: check for pinning
 	
 	if(this->Pinned != nullptr){
-		possibleMoves.clear();
+		if(this->Pinned->getPos().getX() == this->Location.getX()){
+			possibleAttackMoves.clear();
+		}
+		else if(this->Pinned->getPos().getY() == this->Location.getY()){
+			possibleForwardMoves.clear();
+			possibleAttackMoves.clear();
+		}
+		else{
+			
+			possibleForwardMoves.clear();
+			
+			size = possibleAttackMoves.size();
+	
+			for(int i = 0; i < size ; ++i){
+				Position current_pos = possibleAttackMoves.at(i);
+				
+				if(current_pos.equals(this->Pinned->getPos()) == false){
+					possibleAttackMoves.erase(possibleAttackMoves.begin() + i);
+					size = possibleAttackMoves.size();
+					i--;
+				}
+			}				
+		}	
 	}
 	
 	// step 4: update LegalMoves

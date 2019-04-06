@@ -2,6 +2,14 @@
 
 Pieces::~Pieces(){LegalMoves.clear();}
 
+Pieces::Pieces(Board *theBoard, bool White, Position Location): theBoard{theBoard},
+															White{White},
+															Location{Location},
+															LegalMoves{},
+															Protected{false},
+															Pinned{nullptr},
+															availableMoveCount{0}{}
+
 bool Pieces::canMove(Position target) const{
 	
 	for(auto i : this->LegalMoves){
@@ -26,15 +34,15 @@ bool Pieces::isWhite() const{
 }
 
 void Pieces::setProtected(bool val){
-	this->Protected(val);
+	this->Protected = val;
 }
 
-void Pieces::setPinned(Piece* pin){
+void Pieces::setPinned(Pieces* pin){
 	this->Pinned = pin;
 }
 
 void Pieces::resetProtectedPinned(){
-	this->Protected(false);
+	this->Protected = false;
 	this->Pinned = nullptr;
 	
 }
@@ -47,11 +55,11 @@ Pieces* Pieces::isPinned() const{
 	return this->Pinned;
 }
 
-int getMoveCount() const{
+int Pieces::getMoveCount() const{
 	return this->availableMoveCount;
 }
 
-vector<Position> getLegalMoves() const{
+std::vector<Position> Pieces::getLegalMoves() const{
 	return this->LegalMoves;
 }
 	

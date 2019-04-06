@@ -26,17 +26,15 @@ class Board {
   King* whiteKing;
   King* blackKing;
 
+  bool isWhiteTurn;		
+
   public:
   Board();
   ~Board();
-
-  int WIDTH;
-  int HEIGHT;
-
-  int whiteScore;
-  int blackScore;
-  
-  bool isWhiteTurn;
+  Board(const Board &n);
+  Board(Board &&n);
+  Board &operator=(const Board &n);
+  Board &operator=(Board &&n);	
 
   // Get the piece pointer at pos
   Pieces* atLocation(Position pos);

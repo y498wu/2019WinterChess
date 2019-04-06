@@ -14,7 +14,7 @@ void Position::setX(int val){
 	this->x = val;
 }
 
-void Position::getX(int val){
+void Position::setY(int val){
 	this->y = val;
 }
 

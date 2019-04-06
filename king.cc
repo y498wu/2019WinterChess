@@ -1,12 +1,12 @@
 #include "king.h"  
+#include "board.h"
+
+using namespace std;
 
 King::~King(){LegalMoves.clear();}
 
-King::King(Board *theBoard, bool White, Position Location): theBoard{theBoard},
-															White{White},
-															Location{Location},
-															Protected{false},
-															Pinned{nullptr},
+
+King::King(Board *theBoard, bool White, Position Location): Pieces(theBoard, White, Location),
 															hasMoved{false},
 															inCheck{nullptr},
 															inStaleMate{false},
@@ -29,13 +29,12 @@ bool King::isInCheckMate() const{
 	return this->inCheckMate;		
 }
 
-void King::putInCheck(Piece* check){
+void King::putInCheck(Pieces* check){
 	this->inCheck = check;
 }
 
 
-Piece* King::returnPieceCheck() const{
-	
+Pieces* King::returnPieceCheck() const{
 	return this->inCheck;	
 }
 
@@ -50,7 +49,7 @@ void King::updateMoves(){
 	for(int y = this->Location.getY() - 1; y <= this->Location.getY() + 1; ++y){ 
 		for(int x = this->Location.getX() - 1; x <= this->Location.getX() + 1; ++x){ 
 			if(x >= 0 && x <= 7 && y >= 0 && y <= 7){				
-				possibleMoves.emplace_back(new Position(x, y));						
+				possibleMoves.emplace_back(Position(x, y));						
 			}		
 		}		
 	}
@@ -88,7 +87,7 @@ void King::updateMoves(){
 			if(temp != nullptr){
 				if((this->White && temp->isWhite() == false) || (this->White == false && temp->isWhite())){
 					for(auto i = possibleMoves.begin(); i != possibleMoves.end(); ){
-						if(temp->canMove(i)){
+						if(temp->canMove(*i)){
 							i = possibleMoves.erase(i);
 						}
 						else{
@@ -180,7 +179,7 @@ void King::updateMoves(){
 				else if(absolute_x == absolute_y){//attacking piece is diagonal
 					if(tempDiff.getY() > 1 && tempDiff.getX() > 1){
 						
-						y = this->Location.getY();
+						int y = this->Location.getY();
 	
 						for(int x = this->Location.getX() + 1; x < attack_pos.getX() ; ++x){ 
 							y++;
@@ -190,7 +189,7 @@ void King::updateMoves(){
 					}
 					else if(tempDiff.getY() > 1 && tempDiff.getX() < -1){
 						
-						y = this->Location.getY();
+						int y = this->Location.getY();
 	
 						for(int x = this->Location.getX() - 1; x > attack_pos.getX() ; --x){ 
 							y++;
@@ -200,7 +199,7 @@ void King::updateMoves(){
 					}
 					else if(tempDiff.getY() < -1 && tempDiff.getX() > 1){
 						
-						y = this->Location.getY();
+						int y = this->Location.getY();
 	
 						for(int x = this->Location.getX() + 1; x < attack_pos.getX() ; ++x){ 
 							y--;
@@ -210,7 +209,7 @@ void King::updateMoves(){
 					}
 					else if(tempDiff.getY() < -1 && tempDiff.getX() < -1){
 						
-						y = this->Location.getY();
+						int y = this->Location.getY();
 	
 						for(int x = this->Location.getX() - 1; x > attack_pos.getX() ; --x){ 
 							y--;

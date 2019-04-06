@@ -5,6 +5,7 @@
 #include "position.h"
 #include <vector>
 #include <string>
+#include "king.h" 
 
 class Pawn: public Pieces{
 		

@@ -20,7 +20,7 @@ public:
 	// constructor
 	HumanPlayer(bool playerIsWhite, Board* board);
 
-	std::string makeMove(Position start, Position end, string pieceType);
+	std::string makeMove(Position start, Position end, std::string pieceType);
 	
 	void setScore(float i);
 	float getScore() const;

@@ -6,7 +6,7 @@
 using namespace std;
 
 // constructor
-TextDisplay::TextDisplay() : WIDTH{8}, HEIGHT{8}{
+TextDisplay::TextDisplay() : td{8, vector<char>(8)}, WIDTH{8}, HEIGHT{8}{
 	for(int i = 0; i < HEIGHT; i++){
 		for(int j = 0; j < WIDTH; j++){
 			if ((i - j) % 2 == 0){
@@ -23,8 +23,8 @@ void TextDisplay::print(Board *b){
 	for(int i = 0; i < HEIGHT; i++){
 		cout << 8-i << ' ';
 		for(int j = 0; j < WIDTH; j++){
-			if (b[i][j]){
-				cout << b[i][j]->checkType();
+			if (b->atLocation(Position(j, i))){
+				cout << b->atLocation(Position(j, i))->checkType();
 			} else if ((i - j) % 2 == 0){
 				cout << ' ';
 			} else {
@@ -33,5 +33,5 @@ void TextDisplay::print(Board *b){
 		}
 		cout << endl;
 	}
-	cout << endl << "abcdefgh" << endl;
+	cout << endl << "  abcdefgh" << endl;
 }

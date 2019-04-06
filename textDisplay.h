@@ -21,7 +21,7 @@ public:
 	TextDisplay();
 
 	// add and remove pieces
-	void print(Board *b)
+	void print(Board *b);
 };
 
 #endif

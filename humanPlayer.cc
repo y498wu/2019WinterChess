@@ -2,15 +2,16 @@
 #include <iostream>
 
 #include "humanPlayer.h"
+using namespace std;
 
 HumanPlayer::HumanPlayer(bool playerIsWhite, Board* board) : 
-playerIsWhite{playerIsWhite}, board{board}, playerScore{0} {}
+board{board}, playerIsWhite{playerIsWhite}, playerScore{0} {}
 
 std::string HumanPlayer::makeMove(Position start, Position end, string pieceType){
-	if (start->isValid() && end->isValid()){
+	if (start.isValid() && end.isValid()){
 		return "invalid input";
 	}
-	return board->makeMove(Position start, Position end, string pieceType);
+	return board->makeMove(start, end, pieceType);
 }
 
 void HumanPlayer::setScore(float i){

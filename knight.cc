@@ -1,13 +1,12 @@
 #include "knight.h"  
+#include "board.h"
+
+using namespace std;
 
 Knight::~Knight(){LegalMoves.clear();}
 
 
-Knight::Knight(Board *theBoard, bool White, Position Location): theBoard{theBoard},
-															White{White},
-															Location{Location},
-															Protected{false},
-															Pinned{nullptr}{}
+Knight::Knight(Board *theBoard, bool White, Position Location): Pieces(theBoard, White, Location){}
 
 std::string Knight::checkType() const{
 	return this->White ? "H" : "h";
@@ -23,56 +22,56 @@ void Knight::updateMoves(){
 	int y = this->Location.getY() - 1;
 	
 	if(x >= 0 && x <= 7 && y >= 0 && y <= 7){
-		possibleMoves.emplace_back(new Position(x, y));
+		possibleMoves.emplace_back(Position(x, y));
 	}
 	
 	x = this->Location.getX() - 1;
 	y = this->Location.getY() - 2;
 	
 	if(x >= 0 && x <= 7 && y >= 0 && y <= 7){
-		possibleMoves.emplace_back(new Position(x, y));
+		possibleMoves.emplace_back(Position(x, y));
 	}
 	
 	x = this->Location.getX() + 2;
 	y = this->Location.getY() - 1;
 	
 	if(x >= 0 && x <= 7 && y >= 0 && y <= 7){
-		possibleMoves.emplace_back(new Position(x, y));
+		possibleMoves.emplace_back(Position(x, y));
 	}
 	
 	x = this->Location.getX() + 1;
 	y = this->Location.getY() - 2;
 	
 	if(x >= 0 && x <= 7 && y >= 0 && y <= 7){
-		possibleMoves.emplace_back(new Position(x, y));
+		possibleMoves.emplace_back(Position(x, y));
 	}
 	
 	x = this->Location.getX() - 2;
 	y = this->Location.getY() + 1;
 	
 	if(x >= 0 && x <= 7 && y >= 0 && y <= 7){
-		possibleMoves.emplace_back(new Position(x, y));
+		possibleMoves.emplace_back(Position(x, y));
 	}
 	
 	x = this->Location.getX() - 1;
 	y = this->Location.getY() + 2;
 	
 	if(x >= 0 && x <= 7 && y >= 0 && y <= 7){
-		possibleMoves.emplace_back(new Position(x, y));
+		possibleMoves.emplace_back(Position(x, y));
 	}
 	
 	x = this->Location.getX() + 2;
 	y = this->Location.getY() + 1;
 	
 	if(x >= 0 && x <= 7 && y >= 0 && y <= 7){
-		possibleMoves.emplace_back(new Position(x, y));
+		possibleMoves.emplace_back(Position(x, y));
 	}
 	
 	x = this->Location.getX() + 1;
 	y = this->Location.getY() + 2;
 	
 	if(x >= 0 && x <= 7 && y >= 0 && y <= 7){
-		possibleMoves.emplace_back(new Position(x, y));
+		possibleMoves.emplace_back(Position(x, y));
 	}
 	
 	//step 2: check if there are pieces occupying any of the possible locations
@@ -91,7 +90,7 @@ void Knight::updateMoves(){
 				i--;
 				
 			}
-			else if(temp->checkType() = "K" || temp->checkType() = "k"){
+			else if(temp->checkType() == "K" || temp->checkType() == "k"){
 				King* tempKing = dynamic_cast<King*>(temp);
 				tempKing->putInCheck(this);
 			}
