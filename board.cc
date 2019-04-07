@@ -59,7 +59,6 @@ Pieces* Board::atLocation(Position pos){
 
 void Board::updateBoard(){
 	// go through all the Piece* to reset the protected&pinned status
-	cout << "1." << endl;
 	for(int y = 0; y <= 7; ++y){
 		for(int x = 0; x <= 7; ++x){
 			Pieces* temp = pieces[y][x];
@@ -67,18 +66,16 @@ void Board::updateBoard(){
 				temp->resetProtectedPinned();
 			}
 		}	
-	}cout << "2." << endl;
+	}
 	// go through all the Piece* to update their legalMoves
 	for(int y = 0; y <= 7; ++y){
 		for(int x = 0; x <= 7; ++x){
 			Pieces* temp = pieces[y][x];
 			if(temp != nullptr){
-				cout << x << ", " << y << endl;
-				cout << "type:" << temp->checkType() << endl;
 				temp->updateMoves();
 			}
 		}	
-	}cout << "3." << endl;
+	}
 	whiteKing->updateMoves();
 	blackKing->updateMoves();
 }
@@ -131,21 +128,24 @@ void Board::removePieceSetup(Position pos){
 bool Board::validSetup(){//verifies if the setup is valid before exiting setup mode
 	int whiteKingNum = 0;
 	int blackKingNum = 0;
+	cout << "step 1" << endl;
 	this->updateBoard();
-	
+	cout << "step 2" << endl;
 	for(int i = 0; i < 8; ++i){
 		for(int j = 0; j < 8; ++j){
-			if (pieces[i][j]->checkType() == "K"){
-				++whiteKingNum;
-			} else if (pieces[i][j]->checkType() == "k"){
-				++blackKingNum;
-			} else if ((pieces[i][j]->checkType() == "P" || pieces[i][j]->checkType() == "p")
-				&& (i == 0 || i == 7)){
-				cout << "There is a pawn on the first or lat row! Can't leave setup mode!" << endl;
-				return false;
+			if(pieces[i][j] != nullptr){
+				if (pieces[i][j]->checkType() == "K"){
+					++whiteKingNum;
+				} else if (pieces[i][j]->checkType() == "k"){
+					++blackKingNum;
+				} else if ((pieces[i][j]->checkType() == "P" || pieces[i][j]->checkType() == "p")
+					&& (i == 0 || i == 7)){
+					cout << "There is a pawn on the first or lat row! Can't leave setup mode!" << endl;
+					return false;
+				}
 			}
 		}
-	}
+	}cout << "step 3" << endl;
 	if(whiteKingNum != 1){
 		cout << "The board doesn't contain exactly one white king! Can't leave setup mode!" << endl;
 		return false;
@@ -248,6 +248,7 @@ std::string Board::makeMove(Position start, Position end, string pieceType){
 		// move atLocation(start) to atLocation(end)
 		// move will automatically free atLocation(start)
 		pieces[end.getY()][end.getX()] = atLocation(start);
+		pieces[end.getY()][end.getX()]->setPos(end);
 		pieces[start.getY()][start.getX()] = nullptr;
 		// update the board after this move
 		updateBoard();
@@ -256,17 +257,25 @@ std::string Board::makeMove(Position start, Position end, string pieceType){
 			// if still in check, reverse the move back and throw an error
 			pieces[start.getY()][start.getX()] = atLocation(end);
 			pieces[end.getY()][end.getX()] = nullptr;
-			pieces[end.getY()][end.getX()] = temp;
-			temp = nullptr;
+			if(temp != nullptr){
+				pieces[end.getY()][end.getX()] = temp;
+				pieces[end.getY()][end.getX()]->setPos(end);
+				temp = nullptr;
+			}
+
 			return "still in check";
 		} else {
-			delete temp;
+			if(temp != nullptr){		
+				delete temp;
+				temp = nullptr;
+			}
 		}
 	} else {
 		// if currentKing isn't in check, just update the board
 		delete pieces[end.getY()][end.getX()];
 		pieces[end.getY()][end.getX()] = nullptr;
-		pieces[end.getY()][end.getX()] = pieces[start.getY()][start.getX()];
+		pieces[end.getY()][end.getX()] = atLocation(start);
+		pieces[end.getY()][end.getX()]->setPos(end);
 		pieces[start.getY()][start.getX()] = nullptr;
 		this->updateBoard();
 	}
@@ -285,7 +294,7 @@ std::string Board::makeMove(Position start, Position end, string pieceType){
 		} else if (pieceType == "B" || pieceType == "b"){
 			pieces[end.getY()][end.getX()] = new Bishop(this, pieceIsWhite, end);
 		}
-	}cout << "here3" << endl;
+	}
 	// check if the enemy colour's king is in checkmate
 	// This one need more implementations......
 	// such as draw state, restart te setup, display the board

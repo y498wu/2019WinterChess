@@ -12,7 +12,12 @@ std::string Pawn::checkType() const{
 }
 
 void Pawn::updateMoves(){
-		
+	
+	if(this->White == true && this->Location.getY() != 6){
+		this->hasMoved = true;
+	}else if(this->White == false && this->Location.getY() != 1){
+		this->hasMoved = true;
+	} 	
 	vector<Position> possibleForwardMoves;
 	vector<Position> possibleAttackMoves;
 		
@@ -84,7 +89,6 @@ void Pawn::updateMoves(){
 	}
 	
 	//step 2: check if there are pieces occupying any of the possible locations
-	
 	int size = possibleForwardMoves.size();
 	
 	for(int i = 0; i < size ; ++i){
@@ -93,10 +97,12 @@ void Pawn::updateMoves(){
 		
 		if(temp != nullptr){//if there is a piece at the possible location
 			possibleForwardMoves.erase(possibleForwardMoves.begin() + i, possibleForwardMoves.end());
+			break;
+			
 		}			
 	}
 	//check for the attack on left and right
-		
+
 	size = possibleAttackMoves.size();
 	
 	for(int i = 0; i < size ; ++i){
@@ -123,7 +129,7 @@ void Pawn::updateMoves(){
 		}
 		
 	}
-			
+		
 	// step 3: check for pinning
 	
 	if(this->Pinned != nullptr){
@@ -153,7 +159,7 @@ void Pawn::updateMoves(){
 	}
 	
 	// step 4: update LegalMoves
-	
+
 	this->LegalMoves.clear();
 	
 	for(auto i : possibleForwardMoves){

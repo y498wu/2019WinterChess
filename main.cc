@@ -37,7 +37,7 @@ int main(){
 				white_player_h = new HumanPlayer(true, b);
 			}
 			else if(white_p == "computer[1]"){
-				white_p == "computer";
+				white_p = "computer";
 				white_player_c = new ComputerPlayer(true, b, 1);
 			}
 					
@@ -45,7 +45,7 @@ int main(){
 				black_player_h = new HumanPlayer(false, b);
 			}
 			else if(black_p == "computer[1]"){
-				black_p == "computer";
+				black_p = "computer";
 				black_player_c = new ComputerPlayer(false, b, 1);
 			}
 		
@@ -111,9 +111,9 @@ int main(){
 						}
 					}
 				}
-							
+				cin.ignore();			
 				while(true){// first to move is white
-		
+					bool resign = false;
 					display.print(b);
 					b->setTurn(true);
 					
@@ -123,7 +123,6 @@ int main(){
 						while(true){
 							
 							string read_move;
-							cin.ignore();
 							getline(cin, read_move);//read the desired input for the user
 							
 							//parse the input
@@ -131,14 +130,16 @@ int main(){
 							size_t pos = read_move.find(delimiter);
 							string command = read_move.substr(0, pos);
 							read_move.erase(0, pos + delimiter.length());
-							
+						
 							if(command == "resign" && black_p == "human"){
 								black_player_h->setScore(black_player_h->getScore() + 1);
 								cout << "Black wins!" << endl;
+								resign = true;;
 								break;//end the game			
 							}else if(command == "resign" && black_p == "computer"){
 								black_player_c->setScore(black_player_c->getScore() + 1);
 								cout << "Black wins!" << endl;
+								resign = true;;
 								break;//end the game									
 							}
 							
@@ -166,10 +167,7 @@ int main(){
 							
 							//try to make the move, see what the makeMove function returns
 							result = white_player_h->makeMove(start, end, promote);
-							
-							cout << "start:" << start.getX() << ", " << start.getY() << endl;
-							cout << "end:" << end.getX() << ", " << end.getY() << endl;
-							
+												
 							if(result == "invalid input"){
 								cout << "This position is out of bound, try again:" << endl;
 							}else if(result == "no piece"){
@@ -183,6 +181,10 @@ int main(){
 							}else{//if the input is valid you can continue, otherwise keep looping
 								break;
 							}
+						}
+						
+						if(resign == true){
+							break;
 						}
 						
 						if(result == "black checkmate"){
@@ -239,7 +241,6 @@ int main(){
 						while(true){
 						
 							string read_move;
-							cin.ignore();
 							getline(cin, read_move);//read the desired input for the user
 						
 							//parse the input
@@ -251,10 +252,12 @@ int main(){
 							if(command == "resign" && white_p == "human"){
 								white_player_h->setScore(white_player_h->getScore() + 1);
 								cout << "White wins!" << endl;
+								resign = true;
 								break;//end the game			
 							}else if(command == "resign" && white_p == "computer"){
 								white_player_c->setScore(white_player_c->getScore() + 1);
 								cout << "White wins!" << endl;
+								resign = true;
 								break;//end the game									
 							}
 							
@@ -262,23 +265,22 @@ int main(){
 							string position = read_move.substr(0, pos);
 							read_move.erase(0, pos + delimiter.length());
 							
-							int y = 8 - (int)position[1];
+							int y = 8 - (position[1] - '0');
 							int x = position[0] - 'a';
 							
 							Position start(x, y);		
 							string promote = "";
 							Position end(0, 0);
-							
 							if((pos = read_move.find(delimiter)) != std::string::npos){//there is a pawn promotion
 								position = read_move.substr(0, pos);
 								read_move.erase(0, pos + delimiter.length());
 								
-								end.setY(8 - (int)position[1]);
-								end.setY(position[0] - 'a');
+								end.setY(8 - (position[1] - '0'));
+								end.setX(position[0] - 'a');
 								promote = read_move;								
-							}else{//no pawn promotion
-								end.setY(8 - (int)read_move[1]);
-								end.setY(read_move[0] - 'a');
+							}else{
+								end.setY(8 - (read_move[1] - '0'));
+								end.setX(read_move[0] - 'a');
 							}
 							
 							result = black_player_h->makeMove(start, end, promote);
@@ -296,6 +298,10 @@ int main(){
 							}else{
 								break;
 							}
+						}
+						
+						if(resign == true){
+							break;
 						}
 						
 						if(result == "white checkmate"){
@@ -375,12 +381,10 @@ int main(){
 			}
 			
 			delete b;
+			break;
 		}
 		else{
 			cout << "invalid command" << endl;
 		}		
 	}
-	
-	
-	
 }  
