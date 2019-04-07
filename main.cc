@@ -39,6 +39,12 @@ int main(){
 			else if(white_p == "computer[1]"){
 				white_p = "computer";
 				white_player_c = new ComputerPlayer(true, b, 1);
+			}else if(white_p == "computer[2]"){
+				white_p = "computer";
+				white_player_c = new ComputerPlayer(true, b, 2);
+			}else if(white_p == "computer[3]"){
+				white_p = "computer";
+				white_player_c = new ComputerPlayer(true, b, 3);
 			}
 					
 			if(black_p == "human"){
@@ -47,6 +53,14 @@ int main(){
 			else if(black_p == "computer[1]"){
 				black_p = "computer";
 				black_player_c = new ComputerPlayer(false, b, 1);
+			}
+			else if(black_p == "computer[2]"){
+				black_p = "computer";
+				black_player_c = new ComputerPlayer(false, b, 2);
+			}
+			else if(black_p == "computer[3]"){
+				black_p = "computer";
+				black_player_c = new ComputerPlayer(false, b, 3);
 			}
 		
 			//start the game

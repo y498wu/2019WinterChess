@@ -24,11 +24,6 @@ bool Pawn::canAttack(Position target) const{
 
 void Pawn::updateMoves(){
 	
-	if(this->White == true && this->Location.getY() != 6){
-		this->hasMoved = true;
-	}else if(this->White == false && this->Location.getY() != 1){
-		this->hasMoved = true;
-	} 	
 	vector<Position> possibleForwardMoves;
 	vector<Position> possibleAttackMoves;
 		

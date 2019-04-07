@@ -41,6 +41,14 @@ void Pieces::setPos(Position newPos){
 	this->Location = newPos;
 }
 
+bool Pieces::getMoved() const{
+	return this->hasMoved;
+}
+
+void Pieces::setMoved(bool move){
+	this->hasMoved = move; 
+}
+
 bool Pieces::isWhite() const{
 	return this->White;
 }

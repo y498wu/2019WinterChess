@@ -255,6 +255,8 @@ std::string Board::makeMove(Position start, Position end, string pieceType){
 	if (pieceIsWhite != isWhiteTurn){
 		return "wrong color";
 	}
+	
+	
 	// check if the move is valid
 	if(atLocation(start)->canMove(end) == false){
 		return "not legal";
@@ -310,6 +312,8 @@ std::string Board::makeMove(Position start, Position end, string pieceType){
 	// After the move, we check if the pawn needs promotion
 	// if atLocation(end) is a white pawn and it's white's turn and the pieceType is white
 	// or if atLocation(end) is a black pawn and it's black's turn
+	pieces[end.getY()][end.getX()]->setMoved(true);
+	
 	if ((atLocation(end)->checkType() == "P" && isWhiteTurn && end.getY() == 0) 
 		|| (atLocation(end)->checkType() == "p" && !isWhiteTurn && end.getY() == 7)){
 		

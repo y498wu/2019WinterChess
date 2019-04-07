@@ -34,8 +34,9 @@ public:
 	Pieces* isPinned() const;
 	int getMoveCount() const;	
 	std::vector<Position> getLegalMoves() const;
+	bool getMoved() const;
+	void setMoved(bool move);
 	
-
 	//virtual methods, these need to be defined in each piece
 	virtual bool canAttack(Position target) const;
 	virtual std::string checkType() const = 0;
