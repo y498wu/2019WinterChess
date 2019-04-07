@@ -7,7 +7,6 @@ King::~King(){LegalMoves.clear();}
 
 
 King::King(Board *theBoard, bool White, Position Location): Pieces(theBoard, White, Location),
-															hasMoved{false},
 															inCheck{nullptr},
 															inStaleMate{false},
 															inCheckMate{false}{}
@@ -87,7 +86,7 @@ void King::updateMoves(){
 			if(temp != nullptr){
 				if((this->White && temp->isWhite() == false) || (this->White == false && temp->isWhite())){
 					for(auto i = possibleMoves.begin(); i != possibleMoves.end(); ){
-						if(temp->canMove(*i)){
+						if(temp->canAttack(*i)){
 							i = possibleMoves.erase(i);
 						}
 						else{
@@ -98,6 +97,73 @@ void King::updateMoves(){
 			}
 		}
 	}
+	
+	
+	if(this->inCheck && (this->inCheck->checkType() == "q" || this->inCheck->checkType() == "Q" || 
+	   this->inCheck->checkType() == "b" || this->inCheck->checkType() == "B" ||
+	   this->inCheck->checkType() == "r" || this->inCheck->checkType() == "R")){
+		if(this->inCheck->getPos().getX() == this->Location.getX()){
+			for(auto i = possibleMoves.begin(); i != possibleMoves.end(); ){
+				if((*i).getX() == this->Location.getX()){
+					i = possibleMoves.erase(i);
+				}
+				else{
+					++i;
+				}
+			}
+		}
+		else if(this->inCheck->getPos().getY() == this->Location.getY()){
+			for(auto i = possibleMoves.begin(); i != possibleMoves.end(); ){
+				if((*i).getY() == this->Location.getY()){
+					i = possibleMoves.erase(i);
+				}
+				else{
+					++i;
+				}
+			}
+		}
+		
+		else if(this->inCheck->getPos().getX() < this->Location.getX() && this->inCheck->getPos().getY() < this->Location.getY()){
+			Position pos1(this->Location.getX() - 1, this->Location.getX() - 1);
+			Position pos2(this->Location.getX() + 1, this->Location.getX() + 1);
+			
+			for(auto i = possibleMoves.begin(); i != possibleMoves.end(); ){
+				if((*i).equals(pos1) || (*i).equals(pos2)){
+					i = possibleMoves.erase(i);
+				}
+				else{
+					++i;
+				}
+			}
+		}
+		else if(this->inCheck->getPos().getX() > this->Location.getX() && this->inCheck->getPos().getY() > this->Location.getY()){
+			Position pos1(this->Location.getX() - 1, this->Location.getX() - 1);
+			Position pos2(this->Location.getX() + 1, this->Location.getX() + 1);
+			
+			for(auto i = possibleMoves.begin(); i != possibleMoves.end(); ){
+				if((*i).equals(pos1) || (*i).equals(pos2)){
+					i = possibleMoves.erase(i);
+				}
+				else{
+					++i;
+				}
+			}
+		}
+		else{
+			Position pos1(this->Location.getX() + 1, this->Location.getX() - 1);
+			Position pos2(this->Location.getX() - 1, this->Location.getX() + 1);
+			
+			for(auto i = possibleMoves.begin(); i != possibleMoves.end(); ){
+				if((*i).equals(pos1) || (*i).equals(pos2)){
+					i = possibleMoves.erase(i);
+				}
+				else{
+					++i;
+				}
+			}
+		}		
+	}
+	
 	// step 4: update LegalMoves
 	
 	this->LegalMoves.clear();
@@ -123,7 +189,7 @@ void King::updateMoves(){
 					
 					if(temp != nullptr){// if an ally piece can capture the attacking pos, its not checkmate
 						if((this->White && temp->isWhite()) || (this->White == false && temp->isWhite() == false)){
-							if(temp->canMove(attack_pos)){
+							if(temp->canAttack(attack_pos)){
 								this->inCheckMate = false;
 								break;
 							}

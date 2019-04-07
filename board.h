@@ -52,12 +52,18 @@ class Board {
   // setup stage: which colour's turn to go next
   void setTurn(bool isWhite);
   
+  // setup stage: which colour's turn to go next
+  bool getTurn() const;
+  
   //getters for kings, returns white and black king pointers
   King* WhiteKing() const;
   King* BlackKing() const;
 
   // setup stage: user can choose the original setup
   void originalSetup();
+  
+   // clear the board
+  void clear();
 
   // go through all the Piece* to update the board
   void updateBoard();

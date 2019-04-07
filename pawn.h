@@ -8,13 +8,14 @@
 #include "king.h" 
 
 class Pawn: public Pieces{
-		
-	bool hasMoved;
+	
+	std::vector<Position> AttackMoves;
 	
 public: 
 	
 	Pawn(Board *theBoard, bool White, Position Location);
 	void updateMoves() override;
+	bool canAttack(Position target) const override;
 	
 	std::string checkType() const override;
 	~Pawn();

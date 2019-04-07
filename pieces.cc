@@ -8,9 +8,21 @@ Pieces::Pieces(Board *theBoard, bool White, Position Location): theBoard{theBoar
 															LegalMoves{},
 															Protected{false},
 															Pinned{nullptr},
-															availableMoveCount{0}{}
+															availableMoveCount{0}, 
+															hasMoved{false}{}
 
 bool Pieces::canMove(Position target) const{
+	
+	for(auto i : this->LegalMoves){
+		if(i.equals(target)){
+			return true;		
+		}
+	}
+	
+	return false;
+}
+
+bool Pieces::canAttack(Position target) const{
 	
 	for(auto i : this->LegalMoves){
 		if(i.equals(target)){

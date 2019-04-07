@@ -5,10 +5,21 @@ using namespace std;
 
 Pawn::~Pawn(){LegalMoves.clear();}
 
-Pawn::Pawn(Board *theBoard, bool White, Position Location): Pieces(theBoard, White, Location), hasMoved{false}{}
+Pawn::Pawn(Board *theBoard, bool White, Position Location): Pieces(theBoard, White, Location), AttackMoves{} {}
 
 std::string Pawn::checkType() const{
 	return this->White ? "P" : "p";
+}
+
+bool Pawn::canAttack(Position target) const{
+	
+	for(auto i : this->AttackMoves){
+		if(i.equals(target)){
+			return true;		
+		}
+	}
+	
+	return false;
 }
 
 void Pawn::updateMoves(){
@@ -86,6 +97,10 @@ void Pawn::updateMoves(){
 			possibleAttackMoves.emplace_back(Position(x, y));
 		}
 		
+	}
+	this->AttackMoves.clear();
+	for(auto i : possibleAttackMoves){
+		this->AttackMoves.emplace_back(i);
 	}
 	
 	//step 2: check if there are pieces occupying any of the possible locations

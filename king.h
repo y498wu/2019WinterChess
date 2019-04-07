@@ -7,7 +7,6 @@
 #include <string>
 
 class King: public Pieces{
-	bool hasMoved;
 	Pieces* inCheck;
 	bool inStaleMate;
 	bool inCheckMate;

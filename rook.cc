@@ -6,7 +6,7 @@ using namespace std;
 Rook::~Rook(){LegalMoves.clear();}
 
 
-Rook::Rook(Board *theBoard, bool White, Position Location): Pieces(theBoard, White, Location), hasMoved{false}{}
+Rook::Rook(Board *theBoard, bool White, Position Location): Pieces(theBoard, White, Location){}
 
 std::string Rook::checkType() const{
 	return this->White ? "R" : "r";

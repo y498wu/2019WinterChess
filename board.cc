@@ -67,6 +67,10 @@ void Board::updateBoard(){
 			}
 		}	
 	}
+	//reset the check, so that it can be recalculated
+	whiteKing->putInCheck(nullptr);
+	blackKing->putInCheck(nullptr);
+	
 	// go through all the Piece* to update their legalMoves
 	for(int y = 0; y <= 7; ++y){
 		for(int x = 0; x <= 7; ++x){
@@ -76,8 +80,11 @@ void Board::updateBoard(){
 			}
 		}	
 	}
-	whiteKing->updateMoves();
-	blackKing->updateMoves();
+	
+	if(whiteKing != nullptr && blackKing != nullptr ){
+		whiteKing->updateMoves();
+		blackKing->updateMoves();
+	}
 }
 
 // add a piece during setup stage
@@ -96,7 +103,7 @@ void Board::addPieceSetup(string pieceType, Position pos){
 		delete pieces[pos.getY()][pos.getX()];
 		pieces[pos.getY()][pos.getX()] = nullptr;
 	}
-
+	
 	// contruct a new piece pointer to the position on board
 	if (pieceType == "K"){
 		pieces[pos.getY()][pos.getX()] = new King(this, pieceIsWhite, pos);
@@ -128,9 +135,9 @@ void Board::removePieceSetup(Position pos){
 bool Board::validSetup(){//verifies if the setup is valid before exiting setup mode
 	int whiteKingNum = 0;
 	int blackKingNum = 0;
-	cout << "step 1" << endl;
+	
 	this->updateBoard();
-	cout << "step 2" << endl;
+
 	for(int i = 0; i < 8; ++i){
 		for(int j = 0; j < 8; ++j){
 			if(pieces[i][j] != nullptr){
@@ -145,7 +152,7 @@ bool Board::validSetup(){//verifies if the setup is valid before exiting setup m
 				}
 			}
 		}
-	}cout << "step 3" << endl;
+	}
 	if(whiteKingNum != 1){
 		cout << "The board doesn't contain exactly one white king! Can't leave setup mode!" << endl;
 		return false;
@@ -158,6 +165,12 @@ bool Board::validSetup(){//verifies if the setup is valid before exiting setup m
 	} else if (blackKing->isInCheck()){
 		cout << "The black king is in check! Can't leave setup mode!" << endl;
 		return false;
+	}else if (whiteKing->isInStaleMate()){
+		cout << "The white king has no available moves! Can't leave setup mode!" << endl;
+		return false;
+	} else if (blackKing->isInStaleMate()){
+		cout << "The black king has no available moves! Can't leave setup mode!" << endl;
+		return false;
 	} else {
 		return true;
 	}
@@ -167,6 +180,11 @@ bool Board::validSetup(){//verifies if the setup is valid before exiting setup m
 // setter to set the current turn
 void Board::setTurn(bool isWhite){
 	this->isWhiteTurn = isWhite;
+}
+
+// getter to set the current turn
+bool Board::getTurn() const{
+	return this->isWhiteTurn;
 }
 
 King* Board::WhiteKing() const{
@@ -210,8 +228,18 @@ void Board::originalSetup(){
 	this->updateBoard();
 }
 
+void Board::clear(){
+	for(int i = 0; i < 8; i++){
+		for(int j = 0; j < 8; j++){
+			delete pieces[i][j];
+			pieces[i][j] = nullptr;
+		}
+	}	
+}
+
 // makeMove method needs to consider other cases
 std::string Board::makeMove(Position start, Position end, string pieceType){
+		
 	// if there is no piece at Position start, throw an error
 	if (!atLocation(start)){
 		return "no piece";
@@ -242,37 +270,37 @@ std::string Board::makeMove(Position start, Position end, string pieceType){
 	// if currentKing is in check, make the move first
 	// and then check if this move enable the currentKing to escape from check
 	Pieces* temp = nullptr;
+	Pieces* tempCapture = nullptr;
 	if (currentKing->isInCheck()){
 		// move atLocation(end) to temp piece pointer
 	    temp = atLocation(end);
-		// move atLocation(start) to atLocation(end)
-		// move will automatically free atLocation(start)
+		pieces[end.getY()][end.getX()] = nullptr;		
 		pieces[end.getY()][end.getX()] = atLocation(start);
 		pieces[end.getY()][end.getX()]->setPos(end);
 		pieces[start.getY()][start.getX()] = nullptr;
+				
 		// update the board after this move
 		updateBoard();
 		// check if the current king is still in check
 		if (currentKing->isInCheck()){
 			// if still in check, reverse the move back and throw an error
 			pieces[start.getY()][start.getX()] = atLocation(end);
+			pieces[start.getY()][start.getX()]->setPos(start);
 			pieces[end.getY()][end.getX()] = nullptr;
 			if(temp != nullptr){
 				pieces[end.getY()][end.getX()] = temp;
 				pieces[end.getY()][end.getX()]->setPos(end);
 				temp = nullptr;
 			}
-
+			
 			return "still in check";
 		} else {
-			if(temp != nullptr){		
-				delete temp;
-				temp = nullptr;
-			}
+			delete temp;
+			temp = nullptr;
 		}
 	} else {
 		// if currentKing isn't in check, just update the board
-		delete pieces[end.getY()][end.getX()];
+		tempCapture = pieces[end.getY()][end.getX()];
 		pieces[end.getY()][end.getX()] = nullptr;
 		pieces[end.getY()][end.getX()] = atLocation(start);
 		pieces[end.getY()][end.getX()]->setPos(end);
@@ -282,19 +310,35 @@ std::string Board::makeMove(Position start, Position end, string pieceType){
 	// After the move, we check if the pawn needs promotion
 	// if atLocation(end) is a white pawn and it's white's turn and the pieceType is white
 	// or if atLocation(end) is a black pawn and it's black's turn
-	if ((atLocation(end)->checkType() == "P" && isWhiteTurn && end.getY() == 7 && pieceType[0] <= 'Z') 
-		|| (atLocation(end)->checkType() == "p" && !isWhiteTurn && end.getY() == 0)){
-		delete pieces[end.getY()][end.getX()];
-		if (pieceType == "Q" || pieceType == "q"){
+	if ((atLocation(end)->checkType() == "P" && isWhiteTurn && end.getY() == 0) 
+		|| (atLocation(end)->checkType() == "p" && !isWhiteTurn && end.getY() == 7)){
+		
+		if ((pieceType == "Q" && isWhiteTurn) || (pieceType == "q" && !isWhiteTurn)){
+			delete pieces[end.getY()][end.getX()];
+			pieces[end.getY()][end.getX()] = nullptr;
 			pieces[end.getY()][end.getX()] = new Queen(this, pieceIsWhite, end);
-		} else if (pieceType == "R" || pieceType == "r"){
+		} else if ((pieceType == "R" && isWhiteTurn) || (pieceType == "r" && !isWhiteTurn)){
+			delete pieces[end.getY()][end.getX()];
+			pieces[end.getY()][end.getX()] = nullptr;
 			pieces[end.getY()][end.getX()] = new Rook(this, pieceIsWhite, end);
-		} else if (pieceType == "H" || pieceType == "h"){
+		} else if ((pieceType == "H" && isWhiteTurn) || (pieceType == "h" && !isWhiteTurn)){
+			delete pieces[end.getY()][end.getX()];
+			pieces[end.getY()][end.getX()] = nullptr;
 			pieces[end.getY()][end.getX()] = new Knight(this, pieceIsWhite, end);
-		} else if (pieceType == "B" || pieceType == "b"){
+		} else if ((pieceType == "B" && isWhiteTurn) || (pieceType == "b" && !isWhiteTurn)){
+			delete pieces[end.getY()][end.getX()];
+			pieces[end.getY()][end.getX()] = nullptr;
 			pieces[end.getY()][end.getX()] = new Bishop(this, pieceIsWhite, end);
+		}else{
+			pieces[start.getY()][start.getX()] = atLocation(end);
+			pieces[start.getY()][start.getX()]->setPos(start);
+			pieces[end.getY()][end.getX()] = tempCapture;
+			this->updateBoard();
+			return "invalid promotion";
 		}
 	}
+	delete tempCapture;
+	tempCapture = nullptr;
 	// check if the enemy colour's king is in checkmate
 	// This one need more implementations......
 	// such as draw state, restart te setup, display the board
@@ -304,7 +348,11 @@ std::string Board::makeMove(Position start, Position end, string pieceType){
 		return "white checkmate";
 	}else if (blackKing->isInStaleMate() || whiteKing->isInStaleMate()){
 		return "stalemate";
-	} 	
+	}if (isWhiteTurn && blackKing->isInCheck()){
+		return "black check";
+	} else if (!isWhiteTurn && whiteKing->isInCheck()){
+		return "white check";
+	}
 	
 	return "sucessful move";
 }

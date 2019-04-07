@@ -8,9 +8,7 @@
 #include "king.h" 
 
 class Rook: public Pieces{
-		
-	bool hasMoved;
-	
+			
 	void helper_RemoveInvalid(std::vector<Position> &vec, Pieces* &isPin);
 	
 

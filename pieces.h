@@ -17,11 +17,13 @@ protected:
 	bool Protected;
 	Pieces *Pinned;
 	int availableMoveCount;
+	bool hasMoved;
 	
 public: 
 	
 	//non virtual methods, these will behave the same for every piece
 	bool canMove(Position target) const;
+	
 	Position getPos() const;
 	bool isWhite() const;
 	void setPos(Position newPos);
@@ -30,10 +32,12 @@ public:
 	void resetProtectedPinned(); //Resets protected and pinned fields, should be called before updateMoves
 	bool isProtected() const;
 	Pieces* isPinned() const;
-	int getMoveCount() const;
+	int getMoveCount() const;	
 	std::vector<Position> getLegalMoves() const;
+	
 
 	//virtual methods, these need to be defined in each piece
+	virtual bool canAttack(Position target) const;
 	virtual std::string checkType() const = 0;
 	virtual void updateMoves() = 0;	
 	Pieces(Board *theBoard, bool White, Position Location);

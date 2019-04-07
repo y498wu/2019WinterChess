@@ -155,17 +155,17 @@ void Queen::updateMoves(){
 			leftMoves.clear();
 			rightMoves.clear();
 			leftUpMoves.clear();
-			rightUpMoves.clear();;
-			leftDownMoves.clear();;
-			rightDownMoves.clear();;
+			rightUpMoves.clear();
+			leftDownMoves.clear();
+			rightDownMoves.clear();
 		}
 		else if(this->Pinned->getPos().getY() == this->Location.getY()){
 			upMoves.clear();
 			downMoves.clear();
 			leftUpMoves.clear();
-			rightUpMoves.clear();;
-			leftDownMoves.clear();;
-			rightDownMoves.clear();;
+			rightUpMoves.clear();
+			leftDownMoves.clear();
+			rightDownMoves.clear();
 		}
 		
 		else if(this->Pinned->getPos().getX() < this->Location.getX() && this->Pinned->getPos().getY() < this->Location.getY()){

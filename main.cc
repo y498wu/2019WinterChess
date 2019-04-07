@@ -52,7 +52,9 @@ int main(){
 			//start the game
 			cout << "game started enter setup type" << endl;
 			while(true){
-			
+				
+				bool gameStarted = false;
+				bool resign = false;
 				string setup_type;
 				cin >> setup_type;
 			
@@ -61,6 +63,7 @@ int main(){
 				}
 				else if(setup_type == "setup"){//ENTER SETUP MODE
 					display.print(b);
+					b->setTurn(true);
 					while(true){// CODE FOR SETUP MODE HERE, READ COMMANDS AND PASS THEM TO THE BOARD
 						
 						string setup_type;
@@ -77,7 +80,7 @@ int main(){
 							
 							Position pos(x, y);							
 							
-							b->addPieceSetup(piece_type, pos);							
+							b->addPieceSetup(piece_type, pos);	
 							display.print(b);
 						}
 						else if(setup_type == "-"){
@@ -106,14 +109,153 @@ int main(){
 							if(b->validSetup()){
 								break;
 							}else{
-								cout << "This is an invalid board" << endl;
+								cout << "This is an invalid board, cannot leave setup mode:" << endl;
+								display.print(b);
 							}
 						}
 					}
+					
+					if(b->getTurn() == false){
+						cout << "Game starting: Black turn first:" << endl;
+						cin.ignore();
+						gameStarted = true;		
+						display.print(b);
+									
+						if(black_p == "human"){//if the black player is a human
+							string result;
+						
+							while(true){
+						
+								string read_move;
+								getline(cin, read_move);//read the desired input for the user
+						
+								//parse the input
+								string delimiter = " ";
+								size_t pos = read_move.find(delimiter);
+								string command = read_move.substr(0, pos);
+								read_move.erase(0, pos + delimiter.length());
+							
+								if(command == "resign" && white_p == "human"){
+									white_player_h->setScore(white_player_h->getScore() + 1);
+									cout << "White wins!" << endl;
+									resign = true;
+									break;
+								}else if(command == "resign" && white_p == "computer"){
+									white_player_c->setScore(white_player_c->getScore() + 1);
+									cout << "White wins!" << endl;
+									resign = true;
+									break;
+								}
+							
+								pos = read_move.find(delimiter);
+								string position = read_move.substr(0, pos);
+								read_move.erase(0, pos + delimiter.length());
+							
+								int y = 8 - (position[1] - '0');
+								int x = position[0] - 'a';
+							
+								Position start(x, y);		
+								string promote = "";
+								Position end(0, 0);
+								if((pos = read_move.find(delimiter)) != std::string::npos){//there is a pawn promotion
+									position = read_move.substr(0, pos);
+									read_move.erase(0, pos + delimiter.length());
+								
+									end.setY(8 - (position[1] - '0'));
+									end.setX(position[0] - 'a');
+									promote = read_move;								
+								}else{
+									end.setY(8 - (read_move[1] - '0'));
+									end.setX(read_move[0] - 'a');
+								}
+							
+								result = black_player_h->makeMove(start, end, promote);
+						
+								if(result == "invalid input"){
+									cout << "This position is out of bound, try again:" << endl;
+								}else if(result == "no piece"){
+									cout << "There is no piece at this position, try again:" << endl;
+								}else if(result == "wrong color"){
+									cout << "This is not your piece, try again:" << endl;
+								}else if(result == "not legal"){
+									cout << "That is not a legal move for this piece, try again:" << endl;
+								}else if(result == "still in check"){
+									cout << "Your king is still in check! Try again:" << endl;
+								}else{
+									break;
+								}
+							}
+						
+							if(resign == false){
+														
+							if(result == "white checkmate"){
+								black_player_h->setScore(black_player_h->getScore() + 1);
+								display.print(b);
+								cout << "Black wins!" << endl;
+								resign = true;
+							} 
+							else if(result == "stalemate" && white_p == "human"){
+								black_player_h->setScore(black_player_h->getScore() + 0.5);
+								white_player_h->setScore(white_player_h->getScore() + 0.5);
+								display.print(b);
+								cout << "Stalemate!" << endl;
+								resign = true;			
+							}else if(result == "stalemate" && white_p == "computer"){
+								black_player_h->setScore(black_player_h->getScore() + 0.5);
+								white_player_c->setScore(white_player_c->getScore() + 0.5);
+								display.print(b);
+								cout << "Stalemate!" << endl;
+								resign = true;			
+							}
+							else if(result == "sucessful move"){
+								cout << "Sucessful move! White turn next:" << endl;
+							}
+							else if(result == "white check"){
+								cout << "Check! White turn next:" << endl;
+							} 
+							}
+						}else if(black_p == "computer"){
+						
+							string result = black_player_c->move();	
+														
+							if(result == "white checkmate"){
+								black_player_c->setScore(black_player_c->getScore() + 1);
+								display.print(b);
+								cout << "Black wins!" << endl;
+								resign = true;	
+							} 
+							else if(result == "stalemate" && white_p == "human"){
+								black_player_c->setScore(black_player_c->getScore() + 0.5);
+								white_player_h->setScore(white_player_h->getScore() + 0.5);
+								display.print(b);
+								cout << "Stalemate!" << endl;
+								resign = true;				
+							}
+							else if(result == "stalemate" && white_p == "computer"){
+								black_player_c->setScore(black_player_c->getScore() + 0.5);
+								white_player_c->setScore(white_player_c->getScore() + 0.5);
+								display.print(b);
+								cout << "Stalemate!" << endl;
+								resign = true;					
+							}
+							else if(result == "sucessful move"){
+								cout << "Sucessful move! White turn next:" << endl;
+							}
+							else if(result == "white check"){
+								cout << "Check! White turn next:" << endl;
+							} 
+						}		
+					}					
 				}
-				cin.ignore();			
+				
+				if(gameStarted == false && resign == false){
+					cout << "Game starting: White turn first:" << endl;
+					cin.ignore();
+				}
+				
+				if(resign == false){
+				
 				while(true){// first to move is white
-					bool resign = false;
 					display.print(b);
 					b->setTurn(true);
 					
@@ -134,12 +276,12 @@ int main(){
 							if(command == "resign" && black_p == "human"){
 								black_player_h->setScore(black_player_h->getScore() + 1);
 								cout << "Black wins!" << endl;
-								resign = true;;
+								resign = true;
 								break;//end the game			
 							}else if(command == "resign" && black_p == "computer"){
 								black_player_c->setScore(black_player_c->getScore() + 1);
 								cout << "Black wins!" << endl;
-								resign = true;;
+								resign = true;
 								break;//end the game									
 							}
 							
@@ -178,6 +320,8 @@ int main(){
 								cout << "That is not a legal move for this piece, try again:" << endl;
 							}else if(result == "still in check"){
 								cout << "Your king is still in check! Try again:" << endl;
+							}else if(result == "invalid promotion"){
+								cout << "That is an invalid promotion! Try again:" << endl;
 							}else{//if the input is valid you can continue, otherwise keep looping
 								break;
 							}
@@ -189,47 +333,59 @@ int main(){
 						
 						if(result == "black checkmate"){
 							white_player_h->setScore(white_player_h->getScore() + 1);
+							display.print(b);
 							cout << "White wins!" << endl;
 							break;//end the game
 						} 
 						else if(result == "stalemate" && black_p == "human"){
 							white_player_h->setScore(white_player_h->getScore() + 0.5);
 							black_player_h->setScore(black_player_h->getScore() + 0.5);
+							display.print(b);
 							cout << "Stalemate!" << endl;
 							break;//end the game			
 						}else if(result == "stalemate" && black_p == "computer"){
 							white_player_h->setScore(white_player_h->getScore() + 0.5);
 							black_player_c->setScore(black_player_c->getScore() + 0.5);
+							display.print(b);
 							cout << "Stalemate!" << endl;
 							break;//end the game			
 						}
 						else if(result == "sucessful move"){
 							cout << "Sucessful move! Black turn next:" << endl;
 						}
+						else if(result == "black check"){
+							cout << "Check! Black turn next:" << endl;
+						} 
 												
 					}else if(white_p == "computer"){
 						
 						string result = white_player_c->move();	
-						
+													
 						if(result == "black checkmate"){
 							white_player_c->setScore(white_player_c->getScore() + 1);
+							display.print(b);
 							cout << "White wins!" << endl;
 							break;//end the game	
 						} 
 						else if(result == "stalemate" && black_p == "human"){
 							white_player_c->setScore(white_player_c->getScore() + 0.5);
 							black_player_h->setScore(black_player_h->getScore() + 0.5);
+							display.print(b);
 							cout << "Stalemate!" << endl;
 							break;//end the game					
 						}else if(result == "stalemate" && black_p == "computer"){
 							white_player_c->setScore(white_player_c->getScore() + 0.5);
 							black_player_c->setScore(black_player_c->getScore() + 0.5);
+							display.print(b);
 							cout << "Stalemate!" << endl;
 							break;//end the game					
 						}
 						else if(result == "sucessful move"){
 							cout << "Sucessful move! Black turn next:" << endl;
 						}
+						else if(result == "black check"){
+							cout << "Check! Black turn next:" << endl;
+						} 
 					}//THIS CONCLUDES WHITES TURN
 									
 					display.print(b);
@@ -295,6 +451,8 @@ int main(){
 								cout << "That is not a legal move for this piece, try again:" << endl;
 							}else if(result == "still in check"){
 								cout << "Your king is still in check! Try again:" << endl;
+							}else if(result == "invalid promotion"){
+								cout << "That is an invalid promotion! Try again:" << endl;
 							}else{
 								break;
 							}
@@ -306,50 +464,63 @@ int main(){
 						
 						if(result == "white checkmate"){
 							black_player_h->setScore(black_player_h->getScore() + 1);
+							display.print(b);
 							cout << "Black wins!" << endl;
 							break;//end the game	
 						} 
 						else if(result == "stalemate" && white_p == "human"){
 							black_player_h->setScore(black_player_h->getScore() + 0.5);
 							white_player_h->setScore(white_player_h->getScore() + 0.5);
+							display.print(b);
 							cout << "Stalemate!" << endl;
 							break;//end the game			
 						}else if(result == "stalemate" && white_p == "computer"){
 							black_player_h->setScore(black_player_h->getScore() + 0.5);
 							white_player_c->setScore(white_player_c->getScore() + 0.5);
+							display.print(b);
 							cout << "Stalemate!" << endl;
 							break;//end the game			
 						}
 						else if(result == "sucessful move"){
 							cout << "Sucessful move! White turn next:" << endl;
 						}
+						else if(result == "white check"){
+							cout << "Check! White turn next:" << endl;
+						} 
 						
 					}else if(black_p == "computer"){
 						
 						string result = black_player_c->move();	
-						
+																
 						if(result == "white checkmate"){
 							black_player_c->setScore(black_player_c->getScore() + 1);
+							display.print(b);
 							cout << "Black wins!" << endl;
 							break;//end the game	
 						} 
 						else if(result == "stalemate" && white_p == "human"){
 							black_player_c->setScore(black_player_c->getScore() + 0.5);
 							white_player_h->setScore(white_player_h->getScore() + 0.5);
+							display.print(b);
 							cout << "Stalemate!" << endl;
 							break;//end the game					
 						}
 						else if(result == "stalemate" && white_p == "computer"){
 							black_player_c->setScore(black_player_c->getScore() + 0.5);
 							white_player_c->setScore(white_player_c->getScore() + 0.5);
+							display.print(b);
 							cout << "Stalemate!" << endl;
 							break;//end the game					
 						}
 						else if(result == "sucessful move"){
 							cout << "Sucessful move! White turn next:" << endl;
-						}						
-					}		
+						}
+						else if(result == "white check"){
+							cout << "Check! White turn next:" << endl;
+						} 
+					}
 				} // EXITING THIS LOOP MEANS THE GAME ENDED
+				}
 				
 				float white_score;
 				float black_score;
@@ -370,6 +541,7 @@ int main(){
 				cout << "White:" << white_score << endl;
 				cout << "Black:" << black_score << endl;
 		
+				b->clear();
 				string play_again;
 				
 				cout << "Play another round?" << endl;

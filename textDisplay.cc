@@ -23,7 +23,7 @@ void TextDisplay::print(Board *b){
 	for(int i = 0; i < HEIGHT; i++){
 		cout << 8-i << ' ';
 		for(int j = 0; j < WIDTH; j++){
-			if (b->atLocation(Position(j, i))){
+			if (b->atLocation(Position(j, i))){				
 				cout << b->atLocation(Position(j, i))->checkType();
 			} else if ((i - j) % 2 == 0){
 				cout << ' ';
