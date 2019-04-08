@@ -27,7 +27,8 @@ class Board {
   King* blackKing;
 
   bool isWhiteTurn;		
-
+  int abs(int i);
+		
   public:
   Board();
   ~Board();

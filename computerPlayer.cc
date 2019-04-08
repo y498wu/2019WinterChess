@@ -161,6 +161,7 @@ string ComputerPlayer::move(){
 			
 		}
 		else{// if you're not in check
+			
 			vector<Pieces*> movablePieces;
 				
 			//step 1: store pointers to all the ally pieces that can move in a vector
@@ -198,10 +199,8 @@ string ComputerPlayer::move(){
 			cout << "To: " << end.getX() << ", " << end.getY() << endl; 
 			return board->makeMove(start, end, queen);
 		}
-		
 	}
 	else if(difficulty == 2){
-		
 		King *my_king = this->playerIsWhite ? board->WhiteKing() : board->BlackKing();
 				
 		if(my_king->isInCheck()){//if king is under attack
@@ -239,6 +238,9 @@ string ComputerPlayer::move(){
 				
 			}else if(possibleKingMoves.size() > 0){
 				//step 2: check if the king can move away
+				
+				
+				
 				random_shuffle(possibleKingMoves.begin(), possibleKingMoves.end());
 				Position start = my_king->getPos();
 				Position end = possibleKingMoves.at(0);
@@ -349,9 +351,10 @@ string ComputerPlayer::move(){
 			}	
 		}
 		else{// if you're not in check
-		
+			
 			vector<Pieces*> movablePieces;
-				
+			vector<Pieces*> movableAttackPieces;	
+			
 			//step 1: store pointers to all the ally pieces that can move in a vector
 			for(int y = 0; y <= 7; y++){
 				for(int x = 0; x <= 7; x++){
@@ -367,9 +370,48 @@ string ComputerPlayer::move(){
 					}				
 				}			
 			}		
+			
+			for(int y = 0; y <= 7; y++){
+				for(int x = 0; x <= 7; x++){
+					Position current(x, y);
+					Pieces* temp = this->board->atLocation(current);
+		
+					if(temp != nullptr){
+						if((this->playerIsWhite && temp->isWhite()) || (this->playerIsWhite == false && temp->isWhite() == false)){
+							if(temp->getAttackCount() > 0){
+								movableAttackPieces.emplace_back(temp); 				
+							}											
+						}
+					}				
+				}			
+			}		
 		
 			//step 2: pick a movable piece at random and then pick one of its possible moves
+			
+			if(movableAttackPieces.size() > 0){
+						
+				random_shuffle(movableAttackPieces.begin(), movableAttackPieces.end());
 		
+				Pieces *selectedPiece = movableAttackPieces.at(0);
+				Position start = selectedPiece->getPos();
+		
+				vector<Position> possibleMoves = selectedPiece->getLegalMoves();
+		
+				//step 3: find possible attack moves execute a possible legal move from the selected piece
+				Position end(0, 0);
+				
+				for(auto i : possibleMoves){
+					if(board->atLocation(i) != nullptr){
+						end = i;
+					}
+				}
+					
+				string queen = this->playerIsWhite ? "Q" : "q";
+				cout << "Moving: " << start.getX() << ", " << start.getY() << endl;
+				cout << "To: " << end.getX() << ", " << end.getY() << endl; 
+				return board->makeMove(start, end, queen);
+			}
+			
 			random_shuffle(movablePieces.begin(), movablePieces.end());
 		
 			Pieces *selectedPiece = movablePieces.at(0);
@@ -386,6 +428,7 @@ string ComputerPlayer::move(){
 			cout << "Moving: " << start.getX() << ", " << start.getY() << endl;
 			cout << "To: " << end.getX() << ", " << end.getY() << endl; 
 			return board->makeMove(start, end, queen);
+			
 		}
 	}
 	

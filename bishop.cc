@@ -31,6 +31,7 @@ void Bishop::helper_RemoveInvalid(vector<Position> &vec, Pieces* &isPin){
 					King* tempKing = dynamic_cast<King*>(temp);
 					tempKing->putInCheck(this);
 				}else{
+					availableAttackCount++;
 				for(int j = i+1; j < size; j++){//check if the king is the next piece behind temp
 					Pieces* isKing = this->theBoard->atLocation(vec.at(j));
 					
@@ -56,7 +57,7 @@ void Bishop::helper_RemoveInvalid(vector<Position> &vec, Pieces* &isPin){
 }
 
 void Bishop::updateMoves(){
-	
+	availableAttackCount = 0;
 	Pieces* isPin = nullptr;
 	
 	vector<Position> leftUpMoves;

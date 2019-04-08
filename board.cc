@@ -7,6 +7,13 @@
 
 using namespace std;
 
+int Board::abs(int i){
+	if(i > 0){
+		return i;
+	}
+	return -1*i;
+}
+
 Board::Board() : pieces{8, vector<Pieces*>(8, nullptr)}, whiteKing{nullptr}, blackKing{nullptr}, isWhiteTurn{true}{}
 
 Board::~Board(){
@@ -59,11 +66,13 @@ Pieces* Board::atLocation(Position pos){
 
 void Board::updateBoard(){
 	// go through all the Piece* to reset the protected&pinned status
+	
 	for(int y = 0; y <= 7; ++y){
 		for(int x = 0; x <= 7; ++x){
 			Pieces* temp = pieces[y][x];
 			if(temp != nullptr){
 				temp->resetProtectedPinned();
+				temp->setEnPassant(nullptr);
 			}
 		}	
 	}
@@ -239,7 +248,7 @@ void Board::clear(){
 
 // makeMove method needs to consider other cases
 std::string Board::makeMove(Position start, Position end, string pieceType){
-		
+	
 	// if there is no piece at Position start, throw an error
 	if (!atLocation(start)){
 		return "no piece";
@@ -256,7 +265,144 @@ std::string Board::makeMove(Position start, Position end, string pieceType){
 		return "wrong color";
 	}
 	
+	//check if the player is trying to castle
+	int diff_x = end.getX() - start.getX();
+	int diff_y = end.getY() - start.getY();
+
+	if(abs(diff_x) == 2 && diff_y == 0){
 	
+	if((atLocation(start)->checkType() == "K" || atLocation(start)->checkType() == "k") && 
+	(atLocation(end) == nullptr) && (atLocation(start)->getMoved() == false)){
+		
+		vector<Position> alongTheWay;
+		Position new_rook_pos(0, 0);
+		bool attack_way = false;
+		string rook_s = pieceIsWhite ? "R" : "r";
+		Pieces* rook_castle = nullptr;
+		//check for a possible rook
+		
+		if(diff_y == 0 && (diff_x > 0)){//if you're trying to casle to the right
+			alongTheWay.emplace_back(Position(start.getX(), start.getY()));
+			alongTheWay.emplace_back(Position(start.getX() + 1, start.getY()));
+			alongTheWay.emplace_back(Position(start.getX() + 2, start.getY()));
+			new_rook_pos = Position(start.getX() + 1, start.getY());
+
+			for(int i = start.getX() + 2; i < 8; ++i){
+				if(atLocation(Position(i, start.getY())) != nullptr){
+	
+					if(atLocation(Position(i, start.getY()))->checkType() == rook_s && 
+					   atLocation(Position(i, start.getY()))->getMoved() == false){
+						rook_castle = atLocation(Position(i, start.getY())); 
+						break;
+					}
+					break;
+				}
+			}			
+		}
+		else if(diff_y == 0 && (diff_x > 0)){//if you're trying to casle to the left
+			alongTheWay.emplace_back(Position(start.getX(), start.getY()));
+			alongTheWay.emplace_back(Position(start.getX() - 1, start.getY()));
+			alongTheWay.emplace_back(Position(start.getX() - 2, start.getY()));
+			new_rook_pos = Position(start.getX() - 1, start.getY());
+			
+			for(int i = start.getX() - 2; i >= 0; --i){
+				if(pieces[start.getY()][i] != nullptr){
+					if(pieces[start.getY()][i]->checkType() == rook_s && pieces[i][start.getY()]->getMoved() == false){
+						rook_castle = pieces[i][start.getY()]; 
+						break;
+					}
+					break;
+				}
+			}			
+		}
+
+		if(rook_castle != nullptr){//if there is a viable rook, check nothing can attack anything on its path
+	
+			for(int y = 0; y <= 7; ++y){
+				for(int x = 0; x <= 7; ++x){
+					Pieces* temp = pieces[y][x];
+		
+					if(temp != nullptr){
+						if((pieceIsWhite == true && temp->isWhite() == false) || (pieceIsWhite == false && temp->isWhite())){
+							for(auto i : alongTheWay){
+								if(temp->canAttack(i)){
+									attack_way = true;
+									break;
+								}
+							}
+						}
+					}
+				}
+			}
+
+			if(attack_way == false){//if all conditions are met
+	
+				pieces[end.getY()][end.getX()] = atLocation(start);
+				pieces[end.getY()][end.getX()]->setPos(end);
+				pieces[start.getY()][start.getX()] = nullptr;
+				
+				pieces[new_rook_pos.getY()][new_rook_pos.getX()] = atLocation(rook_castle->getPos());
+				pieces[rook_castle->getPos().getY()][rook_castle->getPos().getX()] = nullptr;
+				pieces[new_rook_pos.getY()][new_rook_pos.getX()]->setPos(new_rook_pos);				
+				
+				this->updateBoard();
+				
+				if (isWhiteTurn && blackKing->isInCheckMate()){
+					return "black checkmate";
+				} else if (!isWhiteTurn && whiteKing->isInCheckMate()){
+					return "white checkmate";
+				}else if (blackKing->isInStaleMate() || whiteKing->isInStaleMate()){
+					return "stalemate";
+				}if (isWhiteTurn && blackKing->isInCheck()){
+					return "black check";
+				} else if (!isWhiteTurn && whiteKing->isInCheck()){
+					return "white check";
+				}
+	
+				return "sucessful move";
+			}
+		
+		}		
+	}
+	}
+	//check for en passant
+
+	
+	Pieces* en_pass_piece = atLocation(start)->getEnPassant();
+	if(en_pass_piece != nullptr){
+	Position en_pass(en_pass_piece->getPos().getX(), en_pass_piece->getPos().getY());
+
+	if((atLocation(start)->checkType() == "p" || atLocation(start)->checkType() == "P") && (atLocation(start)->getEnPassant() != nullptr) &&
+	   ((en_pass.getX() - end.getX()) == 0)){
+		
+		if((pieceIsWhite && (end.getY() == (en_pass.getY() - 1))) || 
+		   (!pieceIsWhite && (end.getY() == (en_pass.getY() + 1)))){
+			
+			pieces[end.getY()][end.getX()] = atLocation(start);
+			pieces[end.getY()][end.getX()]->setPos(end);
+			pieces[start.getY()][start.getX()] = nullptr;
+			
+			delete atLocation(en_pass);
+			pieces[en_pass.getY()][en_pass.getX()] = nullptr;					
+				
+			this->updateBoard();
+				
+			if (isWhiteTurn && blackKing->isInCheckMate()){
+				return "black checkmate";
+			} else if (!isWhiteTurn && whiteKing->isInCheckMate()){
+				return "white checkmate";
+			}else if (blackKing->isInStaleMate() || whiteKing->isInStaleMate()){
+				return "stalemate";
+			}if (isWhiteTurn && blackKing->isInCheck()){
+				return "black check";
+			} else if (!isWhiteTurn && whiteKing->isInCheck()){
+				return "white check";
+			}
+	
+			return "sucessful move"; 
+		}		
+	}
+	}
 	// check if the move is valid
 	if(atLocation(start)->canMove(end) == false){
 		return "not legal";
@@ -268,7 +414,7 @@ std::string Board::makeMove(Position start, Position end, string pieceType){
 	} else {
 		currentKing = blackKing;
 	}
-	
+
 	// if currentKing is in check, make the move first
 	// and then check if this move enable the currentKing to escape from check
 	Pieces* temp = nullptr;
@@ -343,6 +489,32 @@ std::string Board::makeMove(Position start, Position end, string pieceType){
 	}
 	delete tempCapture;
 	tempCapture = nullptr;
+	
+	//set en passant
+	diff_x = end.getX() - start.getX();
+	diff_y = end.getY() - start.getY();
+
+	if((atLocation(end)->checkType() == "P" || atLocation(end)->checkType() == "p") && 
+	(abs(diff_y) == 2 && diff_x == 0 )){
+		string enemy_p = pieceIsWhite ? "p" : "P";
+		
+		if(end.getX() + 1 < 8){
+			Position right(end.getX() + 1, end.getY());
+			
+			if(atLocation(right) != nullptr && atLocation(right)->checkType() == enemy_p){
+				atLocation(right)->setEnPassant(atLocation(end));
+			}
+		}
+		
+		if(end.getX() - 1 >= 0){
+			Position left(end.getX() - 1, end.getY());
+			
+			if(atLocation(left) != nullptr && atLocation(left)->checkType() == enemy_p){
+				atLocation(left)->setEnPassant(atLocation(end));
+			}
+		}		
+	}
+	
 	// check if the enemy colour's king is in checkmate
 	// This one need more implementations......
 	// such as draw state, restart te setup, display the board

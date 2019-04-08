@@ -24,6 +24,8 @@ bool Pawn::canAttack(Position target) const{
 
 void Pawn::updateMoves(){
 	
+	availableAttackCount = 0; 
+	
 	vector<Position> possibleForwardMoves;
 	vector<Position> possibleAttackMoves;
 		
@@ -135,6 +137,8 @@ void Pawn::updateMoves(){
 			else if((temp->checkType() == "K") || (temp->checkType() == "k")){
 				King* tempKing = dynamic_cast<King*>(temp);
 				tempKing->putInCheck(this);
+			}else{
+				availableAttackCount++;
 			}
 		}
 		

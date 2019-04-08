@@ -13,7 +13,7 @@ std::string Knight::checkType() const{
 }
 
 void Knight::updateMoves(){
-		
+		availableAttackCount = 0;
 	vector<Position> possibleMoves;
 		
 	//step 1: move all possible legal moves into a temporary vector,
@@ -93,6 +93,9 @@ void Knight::updateMoves(){
 			else if(temp->checkType() == "K" || temp->checkType() == "k"){
 				King* tempKing = dynamic_cast<King*>(temp);
 				tempKing->putInCheck(this);
+			}
+			else{
+				availableAttackCount++;
 			}
 		}	
 				

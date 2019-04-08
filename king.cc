@@ -39,7 +39,7 @@ Pieces* King::returnPieceCheck() const{
 
 
 void King::updateMoves(){
-	
+	availableAttackCount = 0;
 	vector<Position> possibleMoves;
 	
 	//step 1: move all possible legal moves into a temporary vector
@@ -72,7 +72,10 @@ void King::updateMoves(){
 				possibleMoves.erase(possibleMoves.begin() + i);
 				size = possibleMoves.size();
 				i--;					
-			}		
+			}
+			else{
+				availableAttackCount++;
+			}
 		}		
 	}
 	

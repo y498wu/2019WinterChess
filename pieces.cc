@@ -9,7 +9,8 @@ Pieces::Pieces(Board *theBoard, bool White, Position Location): theBoard{theBoar
 															Protected{false},
 															Pinned{nullptr},
 															availableMoveCount{0}, 
-															hasMoved{false}{}
+															hasMoved{false},
+															enPassant{nullptr}{}
 
 bool Pieces::canMove(Position target) const{
 	
@@ -49,6 +50,14 @@ void Pieces::setMoved(bool move){
 	this->hasMoved = move; 
 }
 
+Pieces* Pieces::getEnPassant() const{
+	return this->enPassant;
+}
+
+void Pieces::setEnPassant(Pieces* move){
+	this->enPassant = move; 
+}
+
 bool Pieces::isWhite() const{
 	return this->White;
 }
@@ -77,6 +86,10 @@ Pieces* Pieces::isPinned() const{
 
 int Pieces::getMoveCount() const{
 	return this->availableMoveCount;
+}
+
+int Pieces::getAttackCount() const{
+	return this->availableAttackCount;
 }
 
 std::vector<Position> Pieces::getLegalMoves() const{

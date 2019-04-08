@@ -17,7 +17,9 @@ protected:
 	bool Protected;
 	Pieces *Pinned;
 	int availableMoveCount;
+	int availableAttackCount;
 	bool hasMoved;
+	Pieces* enPassant;
 	
 public: 
 	
@@ -33,9 +35,12 @@ public:
 	bool isProtected() const;
 	Pieces* isPinned() const;
 	int getMoveCount() const;	
+	int getAttackCount() const;
 	std::vector<Position> getLegalMoves() const;
 	bool getMoved() const;
 	void setMoved(bool move);
+	Pieces* getEnPassant() const;
+	void setEnPassant(Pieces* move);
 	
 	//virtual methods, these need to be defined in each piece
 	virtual bool canAttack(Position target) const;
